@@ -18,6 +18,8 @@ MonoBehaviour:
     type: 3}
   _scenePrefab: {fileID: 8457444051872364791, guid: 4ea8fc71d0d33aa4794e860bd8a9318a,
     type: 3}
+  _uiFactory: {fileID: -2017830929143987780, guid: f3b61e05ea40d7c4d8a590651d102e15,
+    type: 3}
   _hideVirtualPlayerScenes: 1
   _scenes:
   - Name: Room
