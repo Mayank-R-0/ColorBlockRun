@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="UnityEngine.UIElements" hr="Highrise.UI" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/ColorBlockRun/Scripts/UI/MainUI.uss?fileID=7433441132597879392&amp;guid=e3ead68fb36451c4bb594581454b3d87&amp;type=3#MainUI" />
+    <ui:Label tabindex="-1" text="Current Round" parse-escape-sequences="true" display-tooltip-when-elided="true" name="labelRound" class="main-u-i" style="width: 111px; opacity: 1;" />
+    <ui:Label tabindex="-1" text="Timer" parse-escape-sequences="true" display-tooltip-when-elided="true" name="labelTimer" class="main-u-i" />
+    <ui:Label tabindex="-1" text="MessageWindow" parse-escape-sequences="true" display-tooltip-when-elided="true" name="labelMessage" class="main-u-i" />
+</ui:UXML>

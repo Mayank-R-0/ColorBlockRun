@@ -156,18 +156,27 @@ MonoBehaviour:
   - Property: {fileID: 4184563366868801913, guid: 6f3e861815e82464781f4773879074a6,
       type: 3}
     Value:
-      rid: 6859011416674533905
+      rid: 6859011483185447806
+  - Property: {fileID: 9159127648315057577, guid: 6f3e861815e82464781f4773879074a6,
+      type: 3}
+    Value:
+      rid: 6859011483185447807
   _uiOutput: 0
   _uiOutputSettings:
     rid: -2
   m_blockMaterial: {fileID: 5825983413748431294}
+  m_colorKey: 1
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 6859011416674533905
+    - rid: 6859011483185447806
       type: {class: MeshRendererGlue/MeshRendererLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 5825983413748431294}
+    - rid: 6859011483185447807
+      type: {class: NumberLuaPropertyValue, ns: Highrise.Lua, asm: com.pz.highrise.lua}
+      data:
+        _value: 1

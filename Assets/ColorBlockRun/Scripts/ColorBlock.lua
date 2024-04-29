@@ -2,7 +2,8 @@ local constants = require("Constants")
 --!SerializeField
 local blockMaterial : MeshRenderer = nil
 
-colorKey = nil
+colorKey = ""
+
 function UpdateColor(_key)
     colorKey = _key
     if(_key == "1") then
@@ -17,3 +18,9 @@ function UpdateColor(_key)
         blockMaterial.material.color = Color.white
     end    
 end
+
+--[[
+function self:ClientStart()
+    UpdateColor(tostring(colorKey))
+end
+]]
