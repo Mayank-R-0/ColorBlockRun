@@ -115,7 +115,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8798638754444210483}
   - component: {fileID: 8750381798920295242}
-  m_Layer: 0
+  - component: {fileID: 8132150605222014935}
+  m_Layer: 7
   m_Name: ColorBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,27 +157,39 @@ MonoBehaviour:
   - Property: {fileID: 4184563366868801913, guid: 6f3e861815e82464781f4773879074a6,
       type: 3}
     Value:
-      rid: 6859011483185447806
-  - Property: {fileID: 9159127648315057577, guid: 6f3e861815e82464781f4773879074a6,
-      type: 3}
-    Value:
-      rid: 6859011483185447807
+      rid: 6859011506090803687
   _uiOutput: 0
   _uiOutputSettings:
     rid: -2
   m_blockMaterial: {fileID: 5825983413748431294}
-  m_colorKey: 1
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 6859011483185447806
+    - rid: 6859011506090803687
       type: {class: MeshRendererGlue/MeshRendererLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 5825983413748431294}
-    - rid: 6859011483185447807
-      type: {class: NumberLuaPropertyValue, ns: Highrise.Lua, asm: com.pz.highrise.lua}
-      data:
-        _value: 1
+--- !u!65 &8132150605222014935
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8769022936977457047}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1, z: 2}
+  m_Center: {x: -1, y: 0, z: 1}

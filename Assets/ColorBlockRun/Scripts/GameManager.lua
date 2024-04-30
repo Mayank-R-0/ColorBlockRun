@@ -13,7 +13,7 @@ local gameStarted : boolean = false
 
 local numberOfRounds = 15
 local roundTime = 5
-local waitTime = 10
+local waitTime = 5
 local playerLobbyTimer
 
 local gameTimer = nil 
@@ -28,6 +28,36 @@ roundEvent = Event.new("RoundEvent")
 
 local blockColors = {}
 local currentColorString = "" 
+
+
+updateClientColorRequest = Event.new("ClientColorUpdate")
+currentPlayerColor = ""
+
+clientEventRequest = Event.new("ClientEventRequest")
+
+local maxWinningPositions = 3
+local topPlayers = {}
+local mt_topplayers = {
+    __len = function(tbl)
+        local count = 0
+        for _ in pairs(tbl) do
+            count += 1
+        end
+        return count
+    end
+}
+setmetatable(topPlayers, mt_topplayers)
+--!SerializeField
+local colorPathSpawner : GameObject = nil
+
+repositionRequest = Event.new("PlayerRepositionRequest")
+repositionEvent = Event.new("PlayerRepositionEvent")
+endpointReachedEvent = Event.new("EndPointReached")
+--!SerializeField
+local respawnPoint : GameObject = nil
+--!SerializeField
+local endPoint : GameObject = nil
+
 --[[
 
     Player Manager Start
@@ -154,7 +184,6 @@ function CloseRoomAndStartGame()
     gameTimer = Timer.Every(roundTime, function() 
         CheckForLastRound()
     end)
-    --gameTimer:Start()
 end
 
 function CheckForLastRound()
@@ -192,6 +221,36 @@ function CreateCurrentColorString()
 end
 
 
+function self:ClientAwake()
+    updateClientColorRequest:Connect(function(player, arg)
+        currentPlayerColor = arg
+        print("Current Color Of Player is : ", currentPlayerColor)
+    end)
+
+    repositionEvent:Connect(function(player)
+        player.character:Teleport(respawnPoint.transform.position)
+    end)
+    
+    roundEvent:Connect(function(blockColor, isEnable)
+        colorPathSpawner:GetComponent("ColorPathSpawner").SetOtherBlocksState(blockColor, isEnable)
+    end)
+
+    gameSetupEvent:Connect(function(dataString)
+        colorPathSpawner:GetComponent("ColorPathSpawner").UpdateColors(dataString)
+    end)
+
+    clientEventRequest:Connect(function(player, requestType)
+        if(requestType == "RepositionToStart") then
+            print("repositioning to start")
+            repositionRequest:FireServer(respawnPoint.transform.position)
+        elseif (requestType == "GameEndReached") then
+            print("Game Win by Player", client.localPlayer.name)
+            endpointReachedEvent:FireServer()
+        end
+    end)
+end
+
+
 function self:ServerAwake()
     TrackPlayers()
 
@@ -199,8 +258,25 @@ function self:ServerAwake()
         print("Client Request recieved")
         gameSetupEvent:FireAllClients(currentColorString)
     end)
-end
 
-function self:ServerUpdate()
+    repositionRequest:Connect(function(player, position)
+        print("respawn position is : ", position)
+        player.character.transform.position = position
+        repositionEvent:FireAllClients(player)
+    end)
+    
+    endpointReachedEvent:Connect(function(player)
+        print("AtrServer")
+        if (#topPlayers >= maxWinningPositions) then
+            print("Reached Late")
+        else
+            table.insert(mt_topplayers, player.name)
+        end
+
+        for i = 1, #topPlayers, 1 do
+            print("winning position hold by ", i, topPlayers[i].name)
+        end
+
+    end)
 
 end

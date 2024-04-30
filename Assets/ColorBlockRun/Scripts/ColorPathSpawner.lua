@@ -1,6 +1,12 @@
 local c = require("Constants")
 local gameManagerModule = require("GameManager")
 local colorBlockComponents : ColorBlock = {}
+local mainUI = nil
+--!SerializeField
+local barrier : GameObject = nil
+
+local barrierHitRequest = Event.new("BarrierHitRequest")
+local barrierHitEvent = Event.new("BarrierHitEvent")
 
 function FillChildComponents()
     for i = 0, self.transform.childCount - 1, 1 do
@@ -9,11 +15,19 @@ function FillChildComponents()
 end
 
 function SetOtherBlocksState(blockColor, isEnable)
-    print("Blocksssssss", blockColor)
     for colorBlockIndex in colorBlockComponents do
         if(colorBlockComponents[colorBlockIndex].colorKey ~= blockColor) then
             colorBlockComponents[colorBlockIndex].gameObject:SetActive(isEnable)
         end 
+    end
+
+    if(not isEnable) then
+        if (blockColor == gameManagerModule.currentPlayerColor) then
+            return
+        else
+            print("reposition player to start")
+            --gameManagerModule.clientEventRequest:FireClient(gameManagerModule.clientEventRequest, "RepositionToStart")
+        end
     end
 end
 
@@ -28,24 +42,22 @@ function UpdateColors(dataString)
     end
 end
 
+function playerCollision(other : Collider)
+    print("Collided Player is : ", other.gameObject.name)
+end
 
 function self:ClientAwake()
    FillChildComponents()
-   print("Awake:", gameManagerModule)
-   gameManagerModule.roundEvent:Connect(function(...)
-    print("Event received!!")
-    SetOtherBlocksState(...)
-   end)
-
-   gameManagerModule.gameSetupEvent:Connect(function(...)
-    print("SetupEventRecieved...!")
-    UpdateColors(...)
-   end)
 
    gameManagerModule.clientJoinRequest:FireServer()
-   
+   --mainUI = self:GetComponent("MainUI")
+   --mainUI.setRoundText("Hello Print")
+--    barrier:GetComponent("Barrier").barrierTriggerRequest:Connect(function(...)
+--     print("event Recieved")
+--         playerCollision(...)
+--    end)
+
+    --barrier.gameObject:SetActive(false)
+
+
 end
-
-    
-
-

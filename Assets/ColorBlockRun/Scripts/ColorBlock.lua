@@ -2,6 +2,7 @@ local constants = require("Constants")
 --!SerializeField
 local blockMaterial : MeshRenderer = nil
 
+local gameManager = require("GameManager")
 colorKey = ""
 
 function UpdateColor(_key)
@@ -17,6 +18,18 @@ function UpdateColor(_key)
     elseif(_key == "5") then     
         blockMaterial.material.color = Color.white
     end    
+end
+
+function self:ClientAwake()
+    function self:OnTriggerEnter(other : Collider)
+        local playerCharacter = other.gameObject:GetComponent(Character)
+        if(playerCharacter == nil) then return end
+
+        local player = playerCharacter.player
+        if(client.localPlayer == player) then
+            gameManager.updateClientColorRequest:FireClient(gameManager.updateClientColorRequest, colorKey)
+        end
+    end
 end
 
 --[[
