@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="UnityEngine.UIElements"
+    xmlns:hr="Highrise.UI"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
+>
+  <hr:UILuaView class="main-u-i" picking-mode="Ignore">
+    <VisualElement name="TopContainer" picking-mode="Ignore">
+      <hr:UILabel tabindex="-1" text="ROUND 0/10" parse-escape-sequences="true" display-tooltip-when-elided="true" name="roundLabel" picking-mode="Ignore">
+      </hr:UILabel>
+      <VisualElement name="backgroundColorOne">
+      </VisualElement>
+      <VisualElement name="backgroundColorTwo">
+      </VisualElement>
+      <VisualElement name="backgroundColorThree">
+      </VisualElement>
+      <VisualElement name="backgroundColorFour">
+      </VisualElement>
+      <VisualElement name="backgroundColorFive">
+      </VisualElement>
+      <hr:UILabel tabindex="-1" text="BLUE" parse-escape-sequences="true" display-tooltip-when-elided="true" name="colorLabel" picking-mode="Ignore">
+      </hr:UILabel>
+      <hr:UILabel tabindex="-1" text="0" parse-escape-sequences="true" display-tooltip-when-elided="true" name="timerLabel" picking-mode="Ignore">
+      </hr:UILabel>
+    </VisualElement>
+
+    <VisualElement name="MessageContainer">
+      <hr:UILabel tabindex="-1" text="Waiting For Players .. !" parse-escape-sequences="true" display-tooltip-when-elided="true" name="messageLabel" picking-mode="Ignore">
+      </hr:UILabel>
+    </VisualElement>
+  </hr:UILuaView>
+</UXML>

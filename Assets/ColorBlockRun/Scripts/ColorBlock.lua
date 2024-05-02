@@ -1,39 +1,31 @@
-local constants = require("Constants")
 --!SerializeField
-local blockMaterial : MeshRenderer = nil
-
-local gameManager = require("GameManager")
+local blockMesh : MeshRenderer = nil
 colorKey = ""
 
-function UpdateColor(_key)
+function UpdateBlockColor(_key)
     colorKey = _key
-    if(_key == "1") then
-        blockMaterial.material.color = Color.red
-    elseif(_key == "2") then
-        blockMaterial.material.color = Color.green
-    elseif(_key == "3") then      
-        blockMaterial.material.color = Color.blue
-    elseif(_key == "4") then      
-        blockMaterial.material.color = Color.yellow
-    elseif(_key == "5") then     
-        blockMaterial.material.color = Color.white
-    end    
+
+    if(colorKey == "1") then
+        blockMesh.material.color = Color.red
+    elseif(colorKey == "2") then
+        blockMesh.material.color = Color.green
+    elseif(colorKey == "3") then
+        blockMesh.material.color = Color.yellow
+    elseif(colorKey == "4") then
+        blockMesh.material.color = Color.blue
+    elseif(colorKey == "5") then
+        blockMesh.material.color = Color.cyan
+    end
 end
 
 function self:ClientAwake()
-    function self:OnTriggerEnter(other : Collider)
+    function self:OnTriggerEnter(other:Collider)
         local playerCharacter = other.gameObject:GetComponent(Character)
         if(playerCharacter == nil) then return end
 
         local player = playerCharacter.player
         if(client.localPlayer == player) then
-            gameManager.updateClientColorRequest:FireClient(gameManager.updateClientColorRequest, colorKey)
+            self.transform.parent:GetComponent("ColorBlockManager").updatePlayerColor(colorKey)
         end
     end
 end
-
---[[
-function self:ClientStart()
-    UpdateColor(tostring(colorKey))
-end
-]]

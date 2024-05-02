@@ -1,1 +1,3 @@
-@import url("/Assets/ColorBlockRun/Scripts/UI/MainUI.uxml");
+
+@import url("/Assets/ColorBlockRun/UI/MainUI.uxml");
+@import url("/Assets/ColorBlockRun/UI/Test.uxml");
