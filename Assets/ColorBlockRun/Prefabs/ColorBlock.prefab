@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 983549963472389020}
   - component: {fileID: 3297927364788105556}
   - component: {fileID: 5016101608457010483}
+  - component: {fileID: 5194690090946498286}
   m_Layer: 7
   m_Name: ColorBlock
   m_TagString: Untagged
@@ -73,7 +74,7 @@ MonoBehaviour:
   - Property: {fileID: 5800874323959547974, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433461785887189
+      rid: 7113433464668685151
   _uiOutput: 0
   _uiOutputSettings:
     rid: -2
@@ -83,11 +84,32 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 7113433461785887189
+    - rid: 7113433464668685151
       type: {class: MeshRendererGlue/MeshRendererLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 1655527860013990533}
+--- !u!95 &5194690090946498286
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2082550810884834195}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 46878d12b1ca72d42845c4ee41a9b98a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2807536276853072520
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,7 +172,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 03e477a869c3ce44090dfc802523de4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

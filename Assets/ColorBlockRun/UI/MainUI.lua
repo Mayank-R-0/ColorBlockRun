@@ -12,6 +12,13 @@ local messageLabel : UILabel = nil
 local MessageContainer : VisualElement = nil
 
 --!Bind
+local InstructionContainer : VisualElement = nil
+--!Bind
+local title : UILabel = nil
+--!Bind
+local instructions : UILabel = nil
+
+--!Bind
 local backgroundColorOne : VisualElement = nil
 --!Bind
 local backgroundColorTwo : VisualElement = nil
@@ -27,6 +34,14 @@ function startLoad()
     updateRoundColor("")
     setTimerText("10")
     MessageContainer.visible = false
+    InstructionContainer.visible = false
+end
+
+function enableInstructions()
+    title:SetPrelocalizedText("INSTRUCTIONS", false)
+    instructions:SetPrelocalizedText("1. Get on displayed color tile \nin 5 sec. \n2. Quick 15-round races. \n3. Fall? Reset and race on. \n4. Finish in 15 rounds for placing.", false)
+    InstructionContainer.visible = true
+    Timer.After(8, function() InstructionContainer.visible = false end)
 end
 
 function setRoundText(text)

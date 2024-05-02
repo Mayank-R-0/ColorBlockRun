@@ -30,5 +30,12 @@
       <hr:UILabel tabindex="-1" text="Waiting For Players .. !" parse-escape-sequences="true" display-tooltip-when-elided="true" name="messageLabel" picking-mode="Ignore">
       </hr:UILabel>
     </VisualElement>
+
+    <VisualElement name="InstructionContainer">
+      <hr:UILabel tabindex="-1" text="INSTRUCTIONS" parse-escape-sequences="true" display-tooltip-when-elided="true" name="title">
+      </hr:UILabel>
+      <hr:UILabel tabindex="-1" text="1. Get on displayed color tile &#10;in 5 sec.&#10;2. Quick 15-round races.&#10;3. Fall? Reset and race on.&#10;4. Finish in 15 rounds for placing." parse-escape-sequences="true" display-tooltip-when-elided="true" name="instructions">
+      </hr:UILabel>
+    </VisualElement>
   </hr:UILuaView>
 </UXML>
