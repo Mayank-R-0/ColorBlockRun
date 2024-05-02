@@ -10,15 +10,15 @@
     <VisualElement name="TopContainer" picking-mode="Ignore">
       <hr:UILabel tabindex="-1" text="ROUND 0/10" parse-escape-sequences="true" display-tooltip-when-elided="true" name="roundLabel" picking-mode="Ignore">
       </hr:UILabel>
-      <VisualElement name="backgroundColorOne">
+      <VisualElement name="backgroundColorOne" picking-mode="Ignore">
       </VisualElement>
-      <VisualElement name="backgroundColorTwo">
+      <VisualElement name="backgroundColorTwo" picking-mode="Ignore">
       </VisualElement>
-      <VisualElement name="backgroundColorThree">
+      <VisualElement name="backgroundColorThree" picking-mode="Ignore">
       </VisualElement>
-      <VisualElement name="backgroundColorFour">
+      <VisualElement name="backgroundColorFour" picking-mode="Ignore">
       </VisualElement>
-      <VisualElement name="backgroundColorFive">
+      <VisualElement name="backgroundColorFive" picking-mode="Ignore">
       </VisualElement>
       <hr:UILabel tabindex="-1" text="BLUE" parse-escape-sequences="true" display-tooltip-when-elided="true" name="colorLabel" picking-mode="Ignore">
       </hr:UILabel>
@@ -26,15 +26,15 @@
       </hr:UILabel>
     </VisualElement>
 
-    <VisualElement name="MessageContainer">
+    <VisualElement name="MessageContainer" picking-mode="Ignore">
       <hr:UILabel tabindex="-1" text="Waiting For Players .. !" parse-escape-sequences="true" display-tooltip-when-elided="true" name="messageLabel" picking-mode="Ignore">
       </hr:UILabel>
     </VisualElement>
 
-    <VisualElement name="InstructionContainer">
-      <hr:UILabel tabindex="-1" text="INSTRUCTIONS" parse-escape-sequences="true" display-tooltip-when-elided="true" name="title">
+    <VisualElement name="InstructionContainer" picking-mode="Ignore">
+      <hr:UILabel tabindex="-1" text="INSTRUCTIONS" parse-escape-sequences="true" display-tooltip-when-elided="true" name="title" picking-mode="Ignore">
       </hr:UILabel>
-      <hr:UILabel tabindex="-1" text="1. Get on displayed color tile &#10;in 5 sec.&#10;2. Quick 15-round races.&#10;3. Fall? Reset and race on.&#10;4. Finish in 15 rounds for placing." parse-escape-sequences="true" display-tooltip-when-elided="true" name="instructions">
+      <hr:UILabel tabindex="-1" text="1. Get on displayed color tile &#10;in 5 sec.&#10;2. Quick 15-round races.&#10;3. Fall? Reset and race on.&#10;4. Finish in 15 rounds for placing." parse-escape-sequences="true" display-tooltip-when-elided="true" name="instructions" picking-mode="Ignore">
       </hr:UILabel>
     </VisualElement>
   </hr:UILuaView>

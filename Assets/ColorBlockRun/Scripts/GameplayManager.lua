@@ -19,14 +19,14 @@ function generatePathColorsForCurrentGame()
 end
 
 local lobbyTimer = nil
-local lobbyTime = 5
+local lobbyTime = 10
 local gameTimer = nil
 local roundTime = 5
 local minimumNumberOfPlayers = 1
 
 local currentColor = ""
 local currentRound = 0
-local maxRounds = 2
+local maxRounds = 10
 local waitingForPlayer = false
 local gameStarted = false
 local roundState = false
@@ -225,6 +225,7 @@ function self:ClientAwake()
 
     clientDataRecieveEvent:Connect(function(player, currentRoundOnServer, currentColorOnServer, colorblocksString, gameStarted, waitingForPlayer)
         if(player ~= client.localPlayer) then return end
+
         mainUI.setRoundText("ROUND " .. tostring(currentRoundOnServer) .. "/10")
         mainUI.updateRoundColor(currentColorOnServer)
         colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(colorblocksString)
@@ -295,7 +296,7 @@ function self:ClientAwake()
         startClientTimerWithTime(10, false)        
         mainUI.updateRoundColor("")
         mainUI.setMessageText("Waiting For Players")
-        mainUI.setRoundText("ROUND 0/15")
+        mainUI.setRoundText("ROUND 0/10")
         print("recieved String is : ", currentPathColorsOnServer)
         if (currentPathColorsOnServer ~= "") then            
             colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(currentPathColorsOnServer)
@@ -338,7 +339,7 @@ function restartGameAtClient()
     currentPlayerColor = ""
     raceWon = false
     mainUI.setMessageText("Restarting Game .. ! Randomizing Tiles ..!")
-    mainUI.setRoundText("ROUND 0/15")
+    mainUI.setRoundText("ROUND 0/10")
     mainUI.setTimerText("0")
     playerTeleportationRequest.FireServer(playerTeleportationRequest, respawnPoint.transform.position)
 end
