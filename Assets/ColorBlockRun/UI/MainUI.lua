@@ -63,7 +63,7 @@ function updateRoundColor(text)
     elseif(text == "3") then
         recievedText = "YELLOW"
     elseif(text == "4") then
-        recievedText = "BLUE"
+        recievedText = "PURPLE"
     elseif(text == "5") then
         recievedText = "CYAN"
     end
@@ -104,7 +104,7 @@ function updateBackgroundColor(colorKey)
         backgroundColorThree.visible = true
         backgroundColorFour.visible = false
         backgroundColorFive.visible = false        
-    elseif(colorKey == "BLUE") then
+    elseif(colorKey == "PURPLE") then
         backgroundColorOne.visible = false
         backgroundColorTwo.visible = false
         backgroundColorThree.visible = false

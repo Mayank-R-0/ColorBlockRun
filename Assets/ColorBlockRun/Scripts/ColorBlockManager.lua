@@ -4,6 +4,17 @@ local childComponents = {}
 
 local currentBlockSelected = 0
 
+--!SerializeField
+local confetti1 : GameObject = nil
+--!SerializeField
+local confetti2 : GameObject = nil
+--!SerializeField
+local confetti3 : GameObject = nil
+--!SerializeField
+local confetti4 : GameObject = nil
+--!SerializeField
+local confetti5 : GameObject = nil
+
 updatePlayerColorEvent = Event.new("updatePlayerColor")
 gameEndReachedEvent = Event.new("gameEndReached")
 
@@ -20,12 +31,30 @@ end
 function gameEndReached()
     print("Game End Reached at colorBlockManager")
     gameEndReachedEvent.FireClient(gameEndReachedEvent)
+
+    confetti1:GetComponent(ParticleSystem):Play(true)
+    confetti2:GetComponent(ParticleSystem):Play(true)
+    Timer.After(1, function()        
+        confetti3:GetComponent(ParticleSystem):Play(true)
+        confetti4:GetComponent(ParticleSystem):Play(true)
+        confetti5:GetComponent(ParticleSystem):Play(true)
+        Timer.After(5, function()            
+            confetti3:GetComponent(ParticleSystem):Stop(true)
+            confetti4:GetComponent(ParticleSystem):Stop(true)
+            confetti5:GetComponent(ParticleSystem):Stop(true)
+        end)
+    end)
 end
 
 function initializeChildComponents()
     for i = 0, self.transform.childCount - 1, 1 do
         table.insert(childComponents, self.transform:GetChild(i):GetComponent("ColorBlock"))
     end
+
+    confetti3:GetComponent(ParticleSystem):Stop(true)
+    confetti4:GetComponent(ParticleSystem):Stop(true)
+    confetti5:GetComponent(ParticleSystem):Stop(true)
+
 end
 
 function UpdateGamePathColors(colorData)

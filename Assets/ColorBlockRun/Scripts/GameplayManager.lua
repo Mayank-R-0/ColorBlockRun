@@ -12,6 +12,8 @@ local respawnPoint : GameObject = nil
 local uiManager : GameObject = nil
 --!SerializeField
 local cameraObject : GameObject = nil
+--!SerializeField
+local deathSound : AudioSource = nil
 local mainUI = nil
 
 
@@ -28,7 +30,7 @@ local minimumNumberOfPlayers = 1
 
 local currentColor = ""
 local currentRound = 0
-local maxRounds = 10
+local maxRounds = 15
 local waitingForPlayer = false
 local gameStarted = false
 local roundState = false
@@ -134,7 +136,7 @@ function endGame()
 
     --print("Current paths on server are : ", colorString)
     generatePathColorsForCurrentGame()
-    Timer.After(5, function()  
+    Timer.After(3, function()  
         currentColor = ""
         currentRound = 0
         roundState = false
@@ -230,7 +232,7 @@ function self:ClientAwake()
     clientDataRecieveEvent:Connect(function(player, currentRoundOnServer, currentColorOnServer, colorblocksString, gameStarted, waitingForPlayer)
         if(player ~= client.localPlayer) then return end
 
-        mainUI.setRoundText("ROUND " .. tostring(currentRoundOnServer) .. "/10")
+        mainUI.setRoundText("ROUND " .. tostring(currentRoundOnServer) .. "/15")
         mainUI.updateRoundColor(currentColorOnServer)
         colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(colorblocksString)
         if(gameStarted == true) then
@@ -245,7 +247,7 @@ function self:ClientAwake()
     serverGameStartEvent:Connect(function(currentRoundOnServer, currentColorOnServer)
         setStartBarrierState(false)
         setEndBarrierState(false)
-        mainUI.setRoundText("ROUND " .. tostring(currentRoundOnServer) .. "/10")
+        mainUI.setRoundText("ROUND " .. tostring(currentRoundOnServer) .. "/15")
         mainUI.updateRoundColor(currentColorOnServer)
         mainUI.hideMessageBox()
         startClientTimerWithTime(5, false)
@@ -259,11 +261,12 @@ function self:ClientAwake()
             
             elseif(currentPlayerColor ~= currentColor and raceWon == false) then 
                 playerTeleportationRequest:FireServer(respawnPoint.transform.position)
+                deathSound:Play()
             end
             mainUI.updateRoundColor("")
             startClientTimerWithTime(5, true)
         else
-            mainUI.setRoundText("ROUND " .. tostring(currentRoundOnServer) .. "/10")
+            mainUI.setRoundText("ROUND " .. tostring(currentRoundOnServer) .. "/15")
             mainUI.updateRoundColor(currentColor)
             startClientTimerWithTime(5, false)
             mainUI.hideMessageBox()
@@ -274,6 +277,7 @@ function self:ClientAwake()
 
     playerTeleportationEvent:Connect(function(player)
         player.character:Teleport(respawnPoint.transform.position)
+        if(player ~= client.localPlayer) then return end
         cameraObject:GetComponent("RTSCamera").CenterOn(Vector3.new(0,0,0))
         currentPlayerColor = ""
     end)
@@ -286,8 +290,11 @@ function self:ClientAwake()
 
     colorBlockManager:GetComponent("ColorBlockManager").gameEndReachedEvent:Connect(function()
         gameEndReachedAtClientRequest.FireServer(gameEndReachedAtClientRequest)
-        mainUI.setMessageText("Race Won")
+        showInMessageBox = false
+        mainUI.setMessageText("Race Completed..!")
         raceWon = true
+        currentPlayerColor = ""
+        Timer.After(5, function() mainUI.setMessageText("Waiting for race to complete..!") end)
     end)
 
     serverGameTimerSyncEvent:Connect(function(currentTime)
@@ -302,7 +309,7 @@ function self:ClientAwake()
         startClientTimerWithTime(10, false)        
         mainUI.updateRoundColor("")
         mainUI.setMessageText("Waiting For Players")
-        mainUI.setRoundText("ROUND 0/10")
+        mainUI.setRoundText("ROUND 0/15")
         --print("recieved String is : ", currentPathColorsOnServer)
         if (currentPathColorsOnServer ~= "") then            
             colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(currentPathColorsOnServer)
@@ -327,7 +334,7 @@ end
 function self:ClientUpdate()
     if(startClientTimer) then
         currentClientTime -= Time.deltaTime
-        if(showInMessageBox) then
+        if(showInMessageBox and (not raceWon)) then
             mainUI.setMessageText("Next round in " .. tostring(math.abs(math.ceil(currentClientTime))))
         else
             mainUI.setTimerText(tostring(math.abs(math.ceil(currentClientTime))))
@@ -344,8 +351,10 @@ function restartGameAtClient()
     setEndBarrierState(true)
     currentPlayerColor = ""
     raceWon = false
+    showInMessageBox = false
+    startClientTimer = false
     mainUI.setMessageText("Restarting Game .. ! Randomizing Tiles ..!")
-    mainUI.setRoundText("ROUND 0/10")
+    mainUI.setRoundText("ROUND 0/15")
     mainUI.setTimerText("0")
     playerTeleportationRequest.FireServer(playerTeleportationRequest, respawnPoint.transform.position)
 end

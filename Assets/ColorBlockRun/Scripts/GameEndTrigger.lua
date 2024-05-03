@@ -15,7 +15,7 @@ function self:ClientAwake()
             if(isStartingLine) then
                 colorBlockManager:GetComponent("ColorBlockManager").updatePlayerColor("")
             else
-                gameEndBarrier:SetActive(true)
+                --gameEndBarrier:SetActive(true)
                 self.gameObject:SetActive(false)
                 print("Game End Reached")
                 colorBlockManager:GetComponent("ColorBlockManager").gameEndReached()

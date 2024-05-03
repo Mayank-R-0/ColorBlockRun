@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3710723178543532749}
-  - component: {fileID: 7541703694619459368}
   - component: {fileID: 4406461520329536291}
   m_Layer: 0
   m_Name: Back
@@ -33,14 +32,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 983549963472389020}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!33 &7541703694619459368
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1634036626371705900}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!208 &4406461520329536291
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -114,8 +105,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 0.5, z: 2}
-  m_Center: {x: -1, y: 0, z: 1}
+  m_Size: {x: 1.5, y: 0.5, z: 1.5}
+  m_Center: {x: -1, y: 0.45, z: 1}
 --- !u!114 &5016101608457010483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,23 +125,23 @@ MonoBehaviour:
   - Property: {fileID: 5800874323959547974, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433486802551169
+      rid: 7113433491839647746
   - Property: {fileID: 3886994730301373605, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433486802551170
+      rid: 7113433491839647747
   - Property: {fileID: 6410246321998694868, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433486802551171
+      rid: 7113433491839647748
   - Property: {fileID: -6934405334792774695, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433486802551172
+      rid: 7113433491839647749
   - Property: {fileID: -8019778140180239258, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433486802551173
+      rid: 7113433491839647750
   _uiOutput: 0
   _uiOutputSettings:
     rid: -2
@@ -164,27 +155,27 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 7113433486802551169
+    - rid: 7113433491839647746
       type: {class: MeshRendererGlue/MeshRendererLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 1655527860013990533}
-    - rid: 7113433486802551170
+    - rid: 7113433491839647747
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 5010075999111125184}
-    - rid: 7113433486802551171
+    - rid: 7113433491839647748
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 4048565285749294046}
-    - rid: 7113433486802551172
+    - rid: 7113433491839647749
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 5027298191305656565}
-    - rid: 7113433486802551173
+    - rid: 7113433491839647750
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
@@ -303,7 +294,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1642334600306370108}
-  - component: {fileID: 6219790141498606921}
   - component: {fileID: 5403533031027790348}
   m_Layer: 0
   m_Name: Right
@@ -327,14 +317,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 983549963472389020}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6219790141498606921
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4048565285749294046}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!208 &5403533031027790348
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -360,7 +342,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3066928808861969905}
-  - component: {fileID: 7256865612918253597}
   - component: {fileID: 4102051749862140993}
   m_Layer: 0
   m_Name: Left
@@ -384,14 +365,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 983549963472389020}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &7256865612918253597
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5010075999111125184}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!208 &4102051749862140993
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -417,7 +390,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3061560038229703743}
-  - component: {fileID: 2917167136186978967}
   - component: {fileID: 4191511112690596312}
   m_Layer: 0
   m_Name: Front
@@ -441,14 +413,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 983549963472389020}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!33 &2917167136186978967
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5027298191305656565}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!208 &4191511112690596312
 NavMeshObstacle:
   m_ObjectHideFlags: 0

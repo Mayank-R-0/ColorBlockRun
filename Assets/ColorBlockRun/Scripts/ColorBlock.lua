@@ -17,15 +17,15 @@ function UpdateBlockColor(_key, _index)
     colorKey = _key
     blockIndex = _index
     if(colorKey == "1") then
-        blockMesh.material.color = Color.red
+        blockMesh.material.color = Color.new(0.9, 0.16, 0.16)
     elseif(colorKey == "2") then
-        blockMesh.material.color = Color.green
+        blockMesh.material.color = Color.new(0.2, 0.9, 0.2)
     elseif(colorKey == "3") then
-        blockMesh.material.color = Color.yellow
+        blockMesh.material.color = Color.new(0.93, 0.93, 0.25)
     elseif(colorKey == "4") then
-        blockMesh.material.color = Color.blue
+        blockMesh.material.color = Color.new(0.54, 0.27, 0.87)
     elseif(colorKey == "5") then
-        blockMesh.material.color = Color.cyan
+        blockMesh.material.color = Color.new(0.22, 0.9, 0.9)
     end
 end
 
