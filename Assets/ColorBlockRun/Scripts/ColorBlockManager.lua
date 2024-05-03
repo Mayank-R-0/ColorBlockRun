@@ -2,11 +2,19 @@ local utilsScript = require("Utils")
 
 local childComponents = {}
 
+local currentBlockSelected = 0
+
 updatePlayerColorEvent = Event.new("updatePlayerColor")
 gameEndReachedEvent = Event.new("gameEndReached")
 
-function updatePlayerColor(colorKey)    
+function updatePlayerColor(colorKey, blockIndex)    
+    currentBlockSelected = blockIndex
     updatePlayerColorEvent.FireClient(updatePlayerColorEvent, colorKey)
+    --print("Current Index on which color we are is : ", blockIndex)
+end
+
+function enableColorBlockBlockers(enable)
+    childComponents[currentBlockSelected].SetBlockersState(enable)
 end
 
 function gameEndReached()
@@ -23,8 +31,8 @@ end
 function UpdateGamePathColors(colorData)
     local colorValues = utilsScript.splitRandomNumbersString(colorData)
 
-    for i = 1, 100, 1 do
-        childComponents[i].UpdateBlockColor(colorValues[i])
+    for i = 1, utilsScript.NumberOfColorBlocks, 1 do
+        childComponents[i].UpdateBlockColor(colorValues[i], i)
     end
 end
 
@@ -34,10 +42,16 @@ function ApplyBlockStates(currentColor, roundState)
             if(childComponents[colorBlockIndex].colorKey ~= currentColor) then
                 childComponents[colorBlockIndex].gameObject:SetActive(false)
             end 
+        end        
+        if currentBlockSelected ~= 0 then
+            enableColorBlockBlockers(true)
         end
     else
         for colorBlockIndex in childComponents do
             childComponents[colorBlockIndex].gameObject:SetActive(true)
+        end
+        if currentBlockSelected ~= 0 then
+            enableColorBlockBlockers(false)
         end
     end
 end

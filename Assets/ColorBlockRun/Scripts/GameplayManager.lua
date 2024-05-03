@@ -10,12 +10,14 @@ local endBarrier : GameObject = nil
 local respawnPoint : GameObject = nil
 --!SerializeField
 local uiManager : GameObject = nil
+--!SerializeField
+local cameraObject : GameObject = nil
 local mainUI = nil
 
 
 local colorString = ""
 function generatePathColorsForCurrentGame()
-    colorString = utilsScript.getRandomNumbersAsString(100)
+    colorString = utilsScript.getRandomNumbersAsString(utilsScript.NumberOfColorBlocks)
 end
 
 local lobbyTimer = nil
@@ -51,6 +53,7 @@ local waitingForPlayersEvent = Event.new("WaitingForPlayersEvent")
 local startClientTimer = false
 local currentClientTime = 10
 local showInMessageBox = false
+local startPosition = nil
 
 
 function setStartBarrierState(state)
@@ -129,7 +132,7 @@ function endGame()
     print("Ending Game")
     restartGameEvent:FireAllClients(restartGameEvent)
 
-    print("Current paths on server are : ", colorString)
+    --print("Current paths on server are : ", colorString)
     generatePathColorsForCurrentGame()
     Timer.After(5, function()  
         currentColor = ""
@@ -222,6 +225,7 @@ end
 function self:ClientAwake()
 
     mainUI = uiManager:GetComponent("MainUI")
+    startPosition = Camera.main.transform.position
 
     clientDataRecieveEvent:Connect(function(player, currentRoundOnServer, currentColorOnServer, colorblocksString, gameStarted, waitingForPlayer)
         if(player ~= client.localPlayer) then return end
@@ -270,6 +274,8 @@ function self:ClientAwake()
 
     playerTeleportationEvent:Connect(function(player)
         player.character:Teleport(respawnPoint.transform.position)
+        cameraObject:GetComponent("RTSCamera").CenterOn(Vector3.new(0,0,0))
+        currentPlayerColor = ""
     end)
 
     clientConnectionRequest.FireServer(clientConnectionRequest)
@@ -297,7 +303,7 @@ function self:ClientAwake()
         mainUI.updateRoundColor("")
         mainUI.setMessageText("Waiting For Players")
         mainUI.setRoundText("ROUND 0/10")
-        print("recieved String is : ", currentPathColorsOnServer)
+        --print("recieved String is : ", currentPathColorsOnServer)
         if (currentPathColorsOnServer ~= "") then            
             colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(currentPathColorsOnServer)
         end

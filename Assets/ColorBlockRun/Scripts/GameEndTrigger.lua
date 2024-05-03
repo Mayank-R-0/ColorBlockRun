@@ -2,6 +2,8 @@
 local colorBlockManager : GameObject = nil
 --!SerializeField
 local gameEndBarrier : GameObject = nil
+--!SerializeField
+local isStartingLine : boolean = false
 
 function self:ClientAwake()
     function self:OnTriggerEnter(other:Collider)
@@ -10,10 +12,14 @@ function self:ClientAwake()
 
         local player = playerCharacter.player
         if(client.localPlayer == player) then
-            gameEndBarrier:SetActive(true)
-            self.gameObject:SetActive(false)
-            print("Game End Reached")
-            colorBlockManager:GetComponent("ColorBlockManager").gameEndReached()
+            if(isStartingLine) then
+                colorBlockManager:GetComponent("ColorBlockManager").updatePlayerColor("")
+            else
+                gameEndBarrier:SetActive(true)
+                self.gameObject:SetActive(false)
+                print("Game End Reached")
+                colorBlockManager:GetComponent("ColorBlockManager").gameEndReached()
+            end
         end
     end
 end
