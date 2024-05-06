@@ -3,10 +3,6 @@ local utilsScript = require("Utils")
 --!SerializeField
 local colorBlockManager : GameObject = nil
 --!SerializeField
-local startBarrier : GameObject = nil
---!SerializeField
-local endBarrier : GameObject = nil
---!SerializeField
 local respawnPoint : GameObject = nil
 --!SerializeField
 local uiManager : GameObject = nil
@@ -14,6 +10,8 @@ local uiManager : GameObject = nil
 local cameraObject : GameObject = nil
 --!SerializeField
 local deathSound : AudioSource = nil
+--!SerializeField
+local finishLine : GameObject = nil
 local mainUI = nil
 
 
@@ -35,6 +33,7 @@ local waitingForPlayer = false
 local gameStarted = false
 local roundState = false
 local raceWon = false
+local endTheCurrentGame = false
 
 local currentPlayerColor = ""
 
@@ -57,14 +56,6 @@ local currentClientTime = 10
 local showInMessageBox = false
 local startPosition = nil
 
-
-function setStartBarrierState(state)
-    startBarrier.SetActive(startBarrier, state)
-end
-
-function setEndBarrierState(state)
-    endBarrier.SetActive(endBarrier, state)
-end
 
 local winPlayers = {}
 local mt_winPlayers = {
@@ -89,6 +80,19 @@ local mt_players = {
     end
 }
 setmetatable(players, mt_players)
+
+local currentRacePlayers = {}
+local mt_currentRacePlayers = {
+    __len = function(tbl)
+        local count = 0
+        for _ in pairs(tbl) do
+            count += 1
+        end
+        return count
+    end
+}
+setmetatable(currentRacePlayers, mt_currentRacePlayers)
+
 
 local function TrackPlayers(game, characterCallback)
     scene.PlayerJoined:Connect(function(scene, player)
@@ -118,11 +122,17 @@ local function TrackPlayers(game, characterCallback)
         end
     end)
 
-    scene.PlayerLeft:Connect(function(player)
+    scene.PlayerLeft:Connect(function(scene, player)
         players[player] = nil
+        currentRacePlayers[player] = nil
 
+        --print("Player left", #players, #currentRacePlayers, #winPlayers,  player.name)
         if(#players < minimumNumberOfPlayers) then
-            endGame()
+            if(gameStarted or waitingForPlayer) then
+                endTheCurrentGame = true
+            else 
+                endGame()
+            end
         end
 
     end)
@@ -133,16 +143,19 @@ end
 function endGame()
     print("Ending Game")
     restartGameEvent:FireAllClients(restartGameEvent)
-
     --print("Current paths on server are : ", colorString)
     generatePathColorsForCurrentGame()
-    Timer.After(3, function()  
+    Timer.After(5, function()  
         currentColor = ""
         currentRound = 0
         roundState = false
         waitingForPlayer = false
         gameStarted = false
-
+        for playerIndex in pairs(winPlayers) do
+            winPlayers[playerIndex] = nil
+        end
+        endTheCurrentGame = false
+        if(#players < minimumNumberOfPlayers) then return end
         waitingForPlayersEvent:FireAllClients(waitingForPlayersEvent, colorString)
         StartWaitingForPlayer()
     end)
@@ -163,7 +176,9 @@ function StartGameplayRounds()
 
     print("Waiting for player is over.. ! Starting game")
 
+    currentRacePlayers = table.clone(players)
 
+    --currentRacePlayers = players;
     ApplyRandomColorToRound()
     currentRound += 1
     serverGameStartEvent.FireAllClients(serverGameStartEvent, currentRound, currentColor)
@@ -183,7 +198,7 @@ function ApplyRoundState()
         currentRound += 1
         print("Current Round : ", currentRound )
     end
-    if(currentRound > maxRounds) then 
+    if(currentRound > maxRounds or endTheCurrentGame) then 
         endGame()
         return
     end
@@ -220,6 +235,12 @@ function BindClientEventsToServer()
 
        -- table.insert(mt_winPlayers, player)
         print("players reached end .. ! : ", #winPlayers)
+        print("players in race .. !", #currentRacePlayers)
+
+
+        if #winPlayers >= #currentRacePlayers then
+            endTheCurrentGame = true
+        end
 
     end)
 end
@@ -237,7 +258,8 @@ function self:ClientAwake()
         colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(colorblocksString)
         if(gameStarted == true) then
             mainUI.setMessageText("Wait fot the next race")
-            startClientTimerWithTime(5, false)
+            startClientTimerWithTime(5, false)            
+            colorBlockManager:GetComponent("ColorBlockManager").UpdateWaitGameStatus(true)
         elseif(waitingForPlayer) then
             mainUI.setMessageText("Waiting For Players")
             startClientTimerWithTime(10, false)
@@ -245,11 +267,11 @@ function self:ClientAwake()
         mainUI:enableInstructions()
     end)
     serverGameStartEvent:Connect(function(currentRoundOnServer, currentColorOnServer)
-        setStartBarrierState(false)
-        setEndBarrierState(false)
+        print("Recieved GameStart")
         mainUI.setRoundText("ROUND " .. tostring(currentRoundOnServer) .. "/15")
         mainUI.updateRoundColor(currentColorOnServer)
-        mainUI.hideMessageBox()
+        mainUI.hideMessageBox()        
+        colorBlockManager:GetComponent("ColorBlockManager").UpdateLayerToTappable(true)
         startClientTimerWithTime(5, false)
     end)
 
@@ -294,7 +316,7 @@ function self:ClientAwake()
         mainUI.setMessageText("Race Completed..!")
         raceWon = true
         currentPlayerColor = ""
-        Timer.After(5, function() mainUI.setMessageText("Waiting for race to complete..!") end)
+        Timer.After(5, function() if raceWon then mainUI.setMessageText("Waiting for race to complete..!") end end)
     end)
 
     serverGameTimerSyncEvent:Connect(function(currentTime)
@@ -306,6 +328,8 @@ function self:ClientAwake()
     end)
 
     waitingForPlayersEvent:Connect(function(event, currentPathColorsOnServer)
+        playerTeleportationRequest.FireServer(playerTeleportationRequest, respawnPoint.transform.position)  
+        finishLine.gameObject:SetActive(true)
         startClientTimerWithTime(10, false)        
         mainUI.updateRoundColor("")
         mainUI.setMessageText("Waiting For Players")
@@ -314,6 +338,7 @@ function self:ClientAwake()
         if (currentPathColorsOnServer ~= "") then            
             colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(currentPathColorsOnServer)
         end
+        colorBlockManager:GetComponent("ColorBlockManager").UpdateWaitGameStatus(false)
     end)
 
     mainUI.startLoad()
@@ -347,8 +372,7 @@ end
 
 function restartGameAtClient()
     colorBlockManager:GetComponent("ColorBlockManager").ApplyBlockStates("1", true)
-    setStartBarrierState(true)
-    setEndBarrierState(true)
+    colorBlockManager:GetComponent("ColorBlockManager").UpdateLayerToTappable(false)
     currentPlayerColor = ""
     raceWon = false
     showInMessageBox = false
@@ -356,5 +380,5 @@ function restartGameAtClient()
     mainUI.setMessageText("Restarting Game .. ! Randomizing Tiles ..!")
     mainUI.setRoundText("ROUND 0/15")
     mainUI.setTimerText("0")
-    playerTeleportationRequest.FireServer(playerTeleportationRequest, respawnPoint.transform.position)
+    finishLine.gameObject:SetActive(false)
 end

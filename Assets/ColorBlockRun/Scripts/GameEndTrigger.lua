@@ -13,7 +13,7 @@ function self:ClientAwake()
         local player = playerCharacter.player
         if(client.localPlayer == player) then
             if(isStartingLine) then
-                colorBlockManager:GetComponent("ColorBlockManager").updatePlayerColor("")
+                colorBlockManager:GetComponent("ColorBlockManager").updatePlayerColor("", 0)
             else
                 --gameEndBarrier:SetActive(true)
                 self.gameObject:SetActive(false)
