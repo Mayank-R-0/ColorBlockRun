@@ -1,3 +1,7 @@
+--[[
+    Managing all the core code of client and server
+]]
+
 local utilsScript = require("Utils")
 
 --!SerializeField

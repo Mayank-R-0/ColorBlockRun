@@ -1,13 +1,17 @@
-local min = 1 
-local max = 5
+-- Module script for utility functions
 
-NumberOfColorBlocks = 200
+local min = 1 -- Minimum value for generating random number between
+local max = 5 -- Maximum value for generating random number between
 
+NumberOfColorBlocks = 300 -- Number of maximum color blocks to generate random values for
+
+-- Generate random number between min & max
 function getRandom()
     local random = math.random(min, max)
     return random
 end
 
+-- Return generated random numbers as array, random numbers are generated for NumberOfColorBlocks
 function getRandomNumbers(--[[Optional]]randomNumberCount)
     randomNumberCount = randomNumberCount or NumberOfColorBlocks
     local randomNumbers = {}
@@ -17,6 +21,7 @@ function getRandomNumbers(--[[Optional]]randomNumberCount)
     return randomNumbers
 end
 
+-- Return generated random numbers as string saperated by ',' , random numbers are generated for NumberOfColorBlocks
 function getRandomNumbersAsString(--[[Optional]]randomNumberCount)
     randomNumberCount = randomNumberCount or NumberOfColorBlocks
     local randomNumbers = getRandomNumbers(randomNumberCount)
@@ -28,6 +33,7 @@ function getRandomNumbersAsString(--[[Optional]]randomNumberCount)
     return numberString
 end
 
+-- Method that splits the random number string back to array and return it
 function splitRandomNumbersString(dataString)
     local substrings = {}
     for substring in dataString:gmatch("[^,]+") do
