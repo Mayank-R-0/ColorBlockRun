@@ -16,6 +16,8 @@ local cameraObject : GameObject = nil
 local deathSound : AudioSource = nil
 --!SerializeField
 local finishLine : GameObject = nil
+--!SerializeField
+local startLineBarrier : GameObject = nil
 local mainUI = nil
 
 
@@ -54,6 +56,13 @@ local gameEndReachedAtClientRequest = Event.new("GameEndReachedAtClientRequest")
 local serverGameTimerSyncEvent = Event.new("ServerGameTimerSyncEvent")
 local restartGameEvent = Event.new("RestartGameEvent")
 local waitingForPlayersEvent = Event.new("WaitingForPlayersEvent")
+
+
+serverUpdateColorRequest = Event.new("ServerUpdateColorRequest")
+local serverUpdateColorEvent = Event.new("ServerUpdateColorEvent")
+serverGameEndRequest = Event.new("ServerGameEndRequest")
+local serverGameEndEvent = Event.new("ServerGameEndEvent")
+
 
 local startClientTimer = false
 local currentClientTime = 10
@@ -215,6 +224,19 @@ function ApplyRoundState()
     end)
 end
 
+function UpdateCurrentPlayerColor(colorKey)
+    currentPlayerColor = colorKey
+end
+
+function gameEndReachedAtClient()
+    gameEndReachedAtClientRequest.FireServer(gameEndReachedAtClientRequest)
+    showInMessageBox = false
+    mainUI.setMessageText("Race Completed..!")
+    raceWon = true
+    currentPlayerColor = ""
+    Timer.After(5, function() if raceWon then mainUI.setMessageText("Waiting for race to complete..!") end end)
+end
+
 
 
 function BindClientEventsToServer()
@@ -224,7 +246,7 @@ function BindClientEventsToServer()
     end)
 
     playerTeleportationRequest:Connect(function(player, position)
-        print("respawn position is : ", position)
+        --print("respawn position is : ", position)
         player.character.transform.position = position
         playerTeleportationEvent:FireAllClients(player)
     end)
@@ -247,6 +269,13 @@ function BindClientEventsToServer()
         end
 
     end)
+
+    serverUpdateColorRequest:Connect(function(player, colorKey)
+        serverUpdateColorEvent:FireAllClients(player, colorKey)
+    end)
+    serverGameEndRequest:Connect(function(player, args)
+        serverGameEndEvent:FireAllClients(player)
+    end)    
 end
 
 function self:ClientAwake()
@@ -276,6 +305,7 @@ function self:ClientAwake()
         mainUI.updateRoundColor(currentColorOnServer)
         mainUI.hideMessageBox()        
         colorBlockManager:GetComponent("ColorBlockManager").UpdateLayerToTappable(true)
+        startLineBarrier:SetActive(false)
         startClientTimerWithTime(5, false)
     end)
 
@@ -297,7 +327,7 @@ function self:ClientAwake()
             startClientTimerWithTime(5, false)
             mainUI.hideMessageBox()
         end
-
+        startLineBarrier:SetActive(not roundState)
         colorBlockManager:GetComponent("ColorBlockManager").ApplyBlockStates(currentColor, roundState)
     end)
 
@@ -310,17 +340,14 @@ function self:ClientAwake()
 
     clientConnectionRequest.FireServer(clientConnectionRequest)
 
-    colorBlockManager:GetComponent("ColorBlockManager").updatePlayerColorEvent:Connect(function(colorKey)
-        currentPlayerColor = colorKey
+    serverGameEndEvent:Connect(function(player)
+        if player ~= client.localPlayer then return end
+        gameEndReachedAtClient()
     end)
 
-    colorBlockManager:GetComponent("ColorBlockManager").gameEndReachedEvent:Connect(function()
-        gameEndReachedAtClientRequest.FireServer(gameEndReachedAtClientRequest)
-        showInMessageBox = false
-        mainUI.setMessageText("Race Completed..!")
-        raceWon = true
-        currentPlayerColor = ""
-        Timer.After(5, function() if raceWon then mainUI.setMessageText("Waiting for race to complete..!") end end)
+    serverUpdateColorEvent:Connect(function(player, colorKey)
+        if player ~= client.localPlayer then return end 
+        UpdateCurrentPlayerColor(colorKey)
     end)
 
     serverGameTimerSyncEvent:Connect(function(currentTime)
@@ -384,5 +411,6 @@ function restartGameAtClient()
     mainUI.setMessageText("Restarting Game .. ! Randomizing Tiles ..!")
     mainUI.setRoundText("ROUND 0/15")
     mainUI.setTimerText("0")
+    startLineBarrier:SetActive(true)
     finishLine.gameObject:SetActive(false)
 end

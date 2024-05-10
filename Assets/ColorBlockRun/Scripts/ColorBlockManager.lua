@@ -26,13 +26,16 @@ local confetti4 : GameObject = nil                -- Confetti on the right troph
 --!SerializeField
 local confetti5 : GameObject = nil                -- Confetti on the center trophy
 
+--!SerializeField
+local gameManagerReference : GameObject = nil
+
 updatePlayerColorEvent = Event.new("updatePlayerColor")            -- Event send to gameplay manager when player changes the color block
 gameEndReachedEvent = Event.new("gameEndReached")                  -- Event send to gameplay manager when player reaches game end
 
 -- Function updates the block index and fires the event to gameplay manager to update color block on which player is currently standing
 function updatePlayerColor(colorKey, blockIndex)    
     currentBlockSelected = blockIndex
-    updatePlayerColorEvent.FireClient(updatePlayerColorEvent, colorKey)
+    gameManagerReference:GetComponent("GameplayManager").serverUpdateColorRequest:FireServer(colorKey)
     --print("Current Index on which color we are is : ", blockIndex)
 end
 
@@ -47,7 +50,9 @@ end
 function gameEndReached()
     --print("Game End Reached at colorBlockManager")
     gameEnded = true
-    gameEndReachedEvent.FireClient(gameEndReachedEvent)
+    --gameManagerReference:GetComponent("GameplayManager"):gameEndReachedAtClient()
+    --gameEndReachedEvent.FireClient(gameEndReachedEvent, client.localPlayer)
+    gameManagerReference:GetComponent("GameplayManager").serverUpdateColorRequest:FireServer()
 
     UpdateLayerToTappable(false)
 

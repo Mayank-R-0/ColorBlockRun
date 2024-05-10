@@ -46,6 +46,8 @@ PluginImporter:
       type: 3}
     Highrise.Lua.Generated.Test: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
       type: 3}
+    Highrise.Lua.Generated.TestScript: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
+      type: 3}
     Highrise.Lua.Generated.UIManager: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
       type: 3}
     Highrise.Lua.Generated.Utils: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
