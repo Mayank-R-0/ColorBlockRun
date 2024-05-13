@@ -139,6 +139,10 @@ local function TrackPlayers(game, characterCallback)
         players[player] = nil
         currentRacePlayers[player] = nil
 
+        if (gameStarted and (#currentRacePlayers <= 0)) then
+            endTheCurrentGame = true
+        end
+
         --print("Player left", #players, #currentRacePlayers, #winPlayers,  player.name)
         if(#players < minimumNumberOfPlayers) then
             if(gameStarted or waitingForPlayer) then
@@ -191,7 +195,6 @@ function StartGameplayRounds()
 
     currentRacePlayers = table.clone(players)
 
-    --currentRacePlayers = players;
     ApplyRandomColorToRound()
     currentRound += 1
     serverGameStartEvent.FireAllClients(serverGameStartEvent, currentRound, currentColor)
@@ -270,8 +273,8 @@ function BindClientEventsToServer()
 
     end)
 
-    serverUpdateColorRequest:Connect(function(player, colorKey)
-        serverUpdateColorEvent:FireAllClients(player, colorKey)
+    serverUpdateColorRequest:Connect(function(player, colorKey, isDisabled)
+        serverUpdateColorEvent:FireAllClients(player, colorKey, isDisabled)
     end)
     serverGameEndRequest:Connect(function(player, args)
         serverGameEndEvent:FireAllClients(player)
@@ -345,9 +348,14 @@ function self:ClientAwake()
         gameEndReachedAtClient()
     end)
 
-    serverUpdateColorEvent:Connect(function(player, colorKey)
+    serverUpdateColorEvent:Connect(function(player, colorKey, isDisabled)
         if player ~= client.localPlayer then return end 
-        UpdateCurrentPlayerColor(colorKey)
+        if isDisabled then             
+            playerTeleportationRequest:FireServer(respawnPoint.transform.position)
+            deathSound:Play()
+        else
+            UpdateCurrentPlayerColor(colorKey)
+        end
     end)
 
     serverGameTimerSyncEvent:Connect(function(currentTime)

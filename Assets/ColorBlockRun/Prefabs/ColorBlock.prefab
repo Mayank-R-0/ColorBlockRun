@@ -84,6 +84,7 @@ Transform:
   - {fileID: 1642334600306370108}
   - {fileID: 3061560038229703743}
   - {fileID: 3710723178543532749}
+  - {fileID: 1758744311797162552}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &3297927364788105556
@@ -125,23 +126,27 @@ MonoBehaviour:
   - Property: {fileID: 5800874323959547974, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433620200555018
+      rid: 7113433650822906362
   - Property: {fileID: 3886994730301373605, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433620200555019
+      rid: 7113433650822906363
   - Property: {fileID: 6410246321998694868, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433620200555020
+      rid: 7113433650822906364
   - Property: {fileID: -6934405334792774695, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433620200555021
+      rid: 7113433650822906365
   - Property: {fileID: -8019778140180239258, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
       type: 3}
     Value:
-      rid: 7113433620200555022
+      rid: 7113433650822906366
+  - Property: {fileID: 1666642356180779991, guid: 67bbaf63ae8df264cb7bb9d0dd1ed281,
+      type: 3}
+    Value:
+      rid: 7113433650822906367
   _uiOutput: 0
   _uiOutputSettings:
     rid: -2
@@ -151,36 +156,120 @@ MonoBehaviour:
   m_rightBlocker: {fileID: 4048565285749294046}
   m_frontBlocker: {fileID: 5027298191305656565}
   m_backBlocker: {fileID: 1634036626371705900}
+  m_disabledCollider: {fileID: 2363825523205163259}
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 7113433620200555018
+    - rid: 7113433650822906362
       type: {class: MeshRendererGlue/MeshRendererLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 1655527860013990533}
-    - rid: 7113433620200555019
+    - rid: 7113433650822906363
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 5010075999111125184}
-    - rid: 7113433620200555020
+    - rid: 7113433650822906364
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 4048565285749294046}
-    - rid: 7113433620200555021
+    - rid: 7113433650822906365
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 5027298191305656565}
-    - rid: 7113433620200555022
+    - rid: 7113433650822906366
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 1634036626371705900}
+    - rid: 7113433650822906367
+      type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
+        asm: com.pz.highrise.lua.glue}
+      data:
+        _value: {fileID: 2363825523205163259}
+--- !u!1 &2363825523205163259
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1758744311797162552}
+  - component: {fileID: 8861185570782049745}
+  - component: {fileID: 4360891568262290928}
+  m_Layer: 7
+  m_Name: DisabledCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1758744311797162552
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2363825523205163259}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 983549963472389020}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8861185570782049745
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2363825523205163259}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 1.5, y: 0.5, z: 1.5}
+  m_Center: {x: -1, y: 0.45, z: 1}
+--- !u!114 &4360891568262290928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2363825523205163259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 2142093496, guid: 991a4badf00d28384a32b2c089782f03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkId: 0
+  _script: {fileID: -974389366465450183, guid: b35387e3b49d5f048ae8925050cdd832, type: 3}
+  _properties: []
+  _uiOutput: 0
+  _uiOutputSettings:
+    rid: -2
+  _copyFromPropertiesVersion: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &2807536276853072520
 GameObject:
   m_ObjectHideFlags: 0

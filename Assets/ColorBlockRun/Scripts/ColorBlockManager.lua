@@ -33,9 +33,11 @@ updatePlayerColorEvent = Event.new("updatePlayerColor")            -- Event send
 gameEndReachedEvent = Event.new("gameEndReached")                  -- Event send to gameplay manager when player reaches game end
 
 -- Function updates the block index and fires the event to gameplay manager to update color block on which player is currently standing
-function updatePlayerColor(colorKey, blockIndex)    
-    currentBlockSelected = blockIndex
-    gameManagerReference:GetComponent("GameplayManager").serverUpdateColorRequest:FireServer(colorKey)
+function updatePlayerColor(colorKey, blockIndex, isDisabled)
+    if(not isDisabled) then     
+        currentBlockSelected = blockIndex
+    end
+    gameManagerReference:GetComponent("GameplayManager").serverUpdateColorRequest:FireServer(colorKey, isDisabled)
     --print("Current Index on which color we are is : ", blockIndex)
 end
 
@@ -50,9 +52,7 @@ end
 function gameEndReached()
     --print("Game End Reached at colorBlockManager")
     gameEnded = true
-    --gameManagerReference:GetComponent("GameplayManager"):gameEndReachedAtClient()
-    --gameEndReachedEvent.FireClient(gameEndReachedEvent, client.localPlayer)
-    gameManagerReference:GetComponent("GameplayManager").serverUpdateColorRequest:FireServer()
+    gameManagerReference:GetComponent("GameplayManager").serverGameEndRequest:FireServer()
 
     UpdateLayerToTappable(false)
 
@@ -97,7 +97,7 @@ function ApplyBlockStates(currentColor, roundState)
     if not roundState then
         for colorBlockIndex in childComponents do
             if(childComponents[colorBlockIndex].colorKey ~= currentColor) then
-                childComponents[colorBlockIndex].gameObject:SetActive(false)
+                childComponents[colorBlockIndex].SetBlockState(false)
             end 
         end        
         if currentBlockSelected ~= 0 then
@@ -105,7 +105,7 @@ function ApplyBlockStates(currentColor, roundState)
         end
     else
         for colorBlockIndex in childComponents do
-            childComponents[colorBlockIndex].gameObject:SetActive(true)
+            childComponents[colorBlockIndex].SetBlockState(true)
         end
         if currentBlockSelected ~= 0 then
             enableColorBlockBlockers(false)

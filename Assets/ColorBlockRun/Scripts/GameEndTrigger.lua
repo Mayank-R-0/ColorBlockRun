@@ -16,7 +16,7 @@ function self:ClientAwake()
         local player = playerCharacter.player
         if(client.localPlayer == player) then
             if(isStartingLine) then
-                colorBlockManager:GetComponent("ColorBlockManager").updatePlayerColor("", 0)    -- if we go onto the color blocks and get back to finish line we need to set the player color back to nil
+                colorBlockManager:GetComponent("ColorBlockManager").updatePlayerColor("", 0, false)    -- if we go onto the color blocks and get back to finish line we need to set the player color back to nil
             else
                 self.gameObject:SetActive(false)
                 print("Game End Reached")

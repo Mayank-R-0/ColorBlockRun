@@ -17,6 +17,9 @@ local frontBlocker : GameObject = nil -- Front Blocker, Blocks from front
 --!SerializeField
 local backBlocker : GameObject = nil -- Back Blocker, Blocks from Back
 
+--!SerializeField
+local disabledCollider : GameObject = nil  -- Collider to enable when the block turned off so players cannot pass through them
+
 --[[
     Variables
 ]]
@@ -53,7 +56,7 @@ function self:ClientAwake()
         local player = playerCharacter.player
         if(client.localPlayer == player) then
             -- When the local player activates the trigger values of this blocks is set as the currently activated color block in the Manager
-            self.transform.parent:GetComponent("ColorBlockManager").updatePlayerColor(colorKey, blockIndex)
+            self.transform.parent:GetComponent("ColorBlockManager").updatePlayerColor(colorKey, blockIndex, false)
         end
     end
 end
@@ -64,4 +67,10 @@ function SetBlockersState(enable)
     rightBlocker:SetActive(enable)
     frontBlocker:SetActive(enable)
     backBlocker:SetActive(enable)
+end
+
+function SetBlockState(blockState)
+    blockMesh.gameObject:SetActive(blockState)
+    self.gameObject:GetComponent(BoxCollider).enabled = blockState
+    disabledCollider:GetComponent(BoxCollider).enabled = not blockState
 end
