@@ -71,16 +71,6 @@ local startPosition = nil
 
 
 local winPlayers = {}
-local mt_winPlayers = {
-    __len = function(tbl)
-        local count = 0
-        for _ in pairs(tbl) do
-            count += 1
-        end
-        return count
-    end
-}
-setmetatable(winPlayers, mt_winPlayers)
 
 local players = {}
 local mt_players = {
@@ -159,18 +149,37 @@ end
 
 function endGame()
     print("Ending Game")
-    restartGameEvent:FireAllClients(restartGameEvent)
+
+
+    
+    local playersStatsForLeaderboard = {}
+
+    for i = 1, #winPlayers, 1 do
+        local playerScoreBasedOnPosition = nil
+        if i > 3 then
+            playerScoreBasedOnPosition = utilsScript.getScore("NotCompleted")
+        else 
+            playerScoreBasedOnPosition = utilsScript.getScore(tostring(i))
+        end
+        local value = {
+            positionOnLeaderboard = i,
+            playerName = winPlayers[i].name,
+            playerScore = playerScoreBasedOnPosition
+        }
+        table.insert(playersStatsForLeaderboard, i, value)
+    end
+
+
+    restartGameEvent:FireAllClients(playersStatsForLeaderboard)
     --print("Current paths on server are : ", colorString)
     generatePathColorsForCurrentGame()
-    Timer.After(5, function()  
+    Timer.After(10, function()  
         currentColor = ""
         currentRound = 0
         roundState = false
         waitingForPlayer = false
         gameStarted = false
-        for playerIndex in pairs(winPlayers) do
-            winPlayers[playerIndex] = nil
-        end
+        table.clear(winPlayers)
         endTheCurrentGame = false
         if(#players < minimumNumberOfPlayers) then return end
         waitingForPlayersEvent:FireAllClients(waitingForPlayersEvent, colorString)
@@ -257,10 +266,7 @@ function BindClientEventsToServer()
     gameEndReachedAtClientRequest:Connect(function(player)
         print("Player End Reached At Server.. ! Adding to winner list : ", player.name)
 
-        winPlayers[player] = {
-            player = player,
-            playerId = player.id
-        }
+        table.insert(winPlayers, #winPlayers + 1, player)
 
        -- table.insert(mt_winPlayers, player)
         print("players reached end .. ! : ", #winPlayers)
@@ -362,8 +368,8 @@ function self:ClientAwake()
         mainUI.setTimerText(tostring(currentTime))
     end)
 
-    restartGameEvent:Connect(function()
-        restartGameAtClient()
+    restartGameEvent:Connect(function(playersStatsForLeaderboard)
+        restartGameAtClient(playersStatsForLeaderboard)
     end)
 
     waitingForPlayersEvent:Connect(function(event, currentPathColorsOnServer)
@@ -373,6 +379,7 @@ function self:ClientAwake()
         mainUI.updateRoundColor("")
         mainUI.setMessageText("Waiting For Players")
         mainUI.setRoundText("ROUND 0/15")
+        mainUI.setLeaderboardState(false)
         --print("recieved String is : ", currentPathColorsOnServer)
         if (currentPathColorsOnServer ~= "") then            
             colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(currentPathColorsOnServer)
@@ -409,7 +416,7 @@ function self:ClientUpdate()
     end
 end
 
-function restartGameAtClient()
+function restartGameAtClient(playersStatsForLeaderboard)
     colorBlockManager:GetComponent("ColorBlockManager").ApplyBlockStates("1", true)
     colorBlockManager:GetComponent("ColorBlockManager").UpdateLayerToTappable(false)
     currentPlayerColor = ""
@@ -421,4 +428,5 @@ function restartGameAtClient()
     mainUI.setTimerText("0")
     startLineBarrier:SetActive(true)
     finishLine.gameObject:SetActive(false)
+    mainUI.fillLeaderboard(playersStatsForLeaderboard)
 end

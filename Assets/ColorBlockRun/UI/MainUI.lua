@@ -19,6 +19,11 @@ local title : UILabel = nil
 local instructions : UILabel = nil
 
 --!Bind
+local LeaderboardContainer : VisualElement = nil
+--!Bind
+local LeaderboardEntryContainer : UIScrollView = nil
+
+--!Bind
 local backgroundColorOne : VisualElement = nil
 --!Bind
 local backgroundColorTwo : VisualElement = nil
@@ -29,12 +34,47 @@ local backgroundColorFour : VisualElement = nil
 --!Bind
 local backgroundColorFive : VisualElement = nil
 
+function fillLeaderboard(playersStatsForLeaderboard)
+
+    LeaderboardEntryContainer:Clear()
+
+    for i = 1, #playersStatsForLeaderboard, 1 do
+
+        local sampleVisualElement = VisualElement.new()
+
+        sampleVisualElement:AddToClassList("scrollBoxVisualElement")
+
+        local lable1 = UILabel.new()
+        lable1:SetPrelocalizedText( tostring(playersStatsForLeaderboard[i].positionOnLeaderboard) .. ".", false)
+        local lable2 = UILabel.new()
+        lable2:SetPrelocalizedText( playersStatsForLeaderboard[i].playerName, false)
+        local lable3 = UILabel.new()
+        lable3:SetPrelocalizedText( tostring(playersStatsForLeaderboard[i].playerScore), false)
+
+        lable1:AddToClassList("scrollBoxText")
+        lable2:AddToClassList("scrollBoxText")
+        lable3:AddToClassList("scrollBoxText")
+
+        sampleVisualElement:Add(lable1)
+        sampleVisualElement:Add(lable2)
+        sampleVisualElement:Add(lable3)
+
+        LeaderboardEntryContainer:Add(sampleVisualElement)
+    end
+    setLeaderboardState(true)
+end
+
+function setLeaderboardState(state)
+    LeaderboardContainer.visible = state
+end
+
 function startLoad()
     setRoundText("ROUND 0/15")
     updateRoundColor("")
     setTimerText("10")
     MessageContainer.visible = false
     InstructionContainer.visible = false
+    setLeaderboardState(false)
 end
 
 function enableInstructions()

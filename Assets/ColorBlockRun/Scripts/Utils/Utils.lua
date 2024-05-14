@@ -5,6 +5,18 @@ local max = 5 -- Maximum value for generating random number between
 
 NumberOfColorBlocks = 300 -- Number of maximum color blocks to generate random values for
 
+scoreValues = {
+    ["1"] = 100,
+    ["2"] = 80,
+    ["3"] = 50,
+    ["NotCompleted"] = 30,
+    ["OnlyParticipated"] = 5
+}
+
+function getScore(positionKey)
+    return scoreValues[positionKey]
+end
+
 -- Generate random number between min & max
 function getRandom()
     local random = math.random(min, max)

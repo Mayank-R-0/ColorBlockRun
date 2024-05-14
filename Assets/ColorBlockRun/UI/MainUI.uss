@@ -279,3 +279,29 @@
     margin-bottom: 0; 
     margin-left: 0;
 }
+
+.scrollBoxVisualElement{
+    flex-grow: 1; 
+    width: 280px; 
+    height: 30px; 
+    flex-direction: row; 
+    justify-content: space-between; 
+    background-color: rgb(0, 0, 0); 
+    padding-top: 0; 
+    padding-right: 5px; 
+    padding-bottom: 0; 
+    padding-left: 5px; 
+    margin-bottom: 5px;
+}
+
+.scrollBoxText{
+    color: rgb(255, 255, 255);
+    padding-top: 4px;
+    padding-right: 2px;
+    padding-bottom: 4px;
+    padding-left: 1px;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+}
