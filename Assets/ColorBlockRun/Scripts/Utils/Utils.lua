@@ -9,8 +9,8 @@ scoreValues = {
     ["1"] = 100,
     ["2"] = 80,
     ["3"] = 50,
-    ["NotCompleted"] = 30,
-    ["OnlyParticipated"] = 5
+    ["Completed"] = 30,
+    ["NotCompleted"] = 5
 }
 
 function getScore(positionKey)

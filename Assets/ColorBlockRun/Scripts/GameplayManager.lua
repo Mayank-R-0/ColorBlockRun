@@ -101,7 +101,8 @@ local function TrackPlayers(game, characterCallback)
     scene.PlayerJoined:Connect(function(scene, player)
         players[player] = {
             player = player,
-            playerId = player.id
+            playerId = player.id,
+            blockIndex = 0
         }
 
 
@@ -128,6 +129,10 @@ local function TrackPlayers(game, characterCallback)
     scene.PlayerLeft:Connect(function(scene, player)
         players[player] = nil
         currentRacePlayers[player] = nil
+        local playerIndexInWinList = table.find(winPlayers, player) 
+        if playerIndexInWinList ~= nil then
+            table.remove(winPlayers, playerIndexInWinList)
+        end
 
         if (gameStarted and (#currentRacePlayers <= 0)) then
             endTheCurrentGame = true
@@ -146,6 +151,24 @@ local function TrackPlayers(game, characterCallback)
 
 end
 
+function getParticipatedPlayers()
+
+    local participcatedPlayers = {}
+    for k, v in pairs(currentRacePlayers) do 
+        if table.find(winPlayers, v.player) ~= nil then continue end
+    
+        table.insert(participcatedPlayers, v)
+
+    end
+
+    return participcatedPlayers
+
+end
+
+local function compareByBlockIndex(player1, player2)
+    return player1.blockIndex > player2.blockIndex
+end
+
 
 function endGame()
     print("Ending Game")
@@ -154,19 +177,39 @@ function endGame()
     
     local playersStatsForLeaderboard = {}
 
+    local currentPosition = 1
+
     for i = 1, #winPlayers, 1 do
         local playerScoreBasedOnPosition = nil
         if i > 3 then
-            playerScoreBasedOnPosition = utilsScript.getScore("NotCompleted")
+            playerScoreBasedOnPosition = utilsScript.getScore("Completed")
         else 
             playerScoreBasedOnPosition = utilsScript.getScore(tostring(i))
         end
         local value = {
-            positionOnLeaderboard = i,
+            positionOnLeaderboard = currentPosition,
             playerName = winPlayers[i].name,
             playerScore = playerScoreBasedOnPosition
         }
-        table.insert(playersStatsForLeaderboard, i, value)
+        table.insert(playersStatsForLeaderboard, currentPosition, value)
+        currentPosition += 1
+        print("Calculating win players")
+    end
+
+    local storageArray = getParticipatedPlayers()
+    table.sort(storageArray, compareByBlockIndex)
+
+    for i = 1, #storageArray, 1 do 
+        if storageArray[i].blockIndex == 0 then continue end
+
+        local value = {
+            positionOnLeaderboard = currentPosition,
+            playerName = storageArray[i].player.name,
+            playerScore = utilsScript.getScore("NotCompleted")
+        }
+
+        table.insert(playersStatsForLeaderboard, currentPosition, value)
+        currentPosition += 1
     end
 
 
@@ -268,7 +311,6 @@ function BindClientEventsToServer()
 
         table.insert(winPlayers, #winPlayers + 1, player)
 
-       -- table.insert(mt_winPlayers, player)
         print("players reached end .. ! : ", #winPlayers)
         print("players in race .. !", #currentRacePlayers)
 
@@ -279,7 +321,12 @@ function BindClientEventsToServer()
 
     end)
 
-    serverUpdateColorRequest:Connect(function(player, colorKey, isDisabled)
+    serverUpdateColorRequest:Connect(function(player, colorKey, blockIndex, isDisabled)
+
+        if blockIndex > currentRacePlayers[player].blockIndex then 
+            currentRacePlayers[player].blockIndex = blockIndex
+        end
+
         serverUpdateColorEvent:FireAllClients(player, colorKey, isDisabled)
     end)
     serverGameEndRequest:Connect(function(player, args)
@@ -300,11 +347,11 @@ function self:ClientAwake()
         colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(colorblocksString)
         if(gameStarted == true) then
             mainUI.setMessageText("Wait fot the next race")
-            startClientTimerWithTime(5, false)            
+            startClientTimerWithTime(roundTime, false)            
             colorBlockManager:GetComponent("ColorBlockManager").UpdateWaitGameStatus(true)
         elseif(waitingForPlayer) then
             mainUI.setMessageText("Waiting For Players")
-            startClientTimerWithTime(10, false)
+            startClientTimerWithTime(lobbyTime, false)
         end
         mainUI:enableInstructions()
     end)
@@ -315,7 +362,7 @@ function self:ClientAwake()
         mainUI.hideMessageBox()        
         colorBlockManager:GetComponent("ColorBlockManager").UpdateLayerToTappable(true)
         startLineBarrier:SetActive(false)
-        startClientTimerWithTime(5, false)
+        startClientTimerWithTime(roundTime, false)
     end)
 
     serverRoundChangeEvent:Connect(function(currentColor, roundState, currentRoundOnServer)
@@ -329,11 +376,11 @@ function self:ClientAwake()
                 deathSound:Play()
             end
             mainUI.updateRoundColor("")
-            startClientTimerWithTime(5, true)
+            startClientTimerWithTime(roundTime, true)
         else
             mainUI.setRoundText("ROUND " .. tostring(currentRoundOnServer) .. "/15")
             mainUI.updateRoundColor(currentColor)
-            startClientTimerWithTime(5, false)
+            startClientTimerWithTime(roundTime, false)
             mainUI.hideMessageBox()
         end
         startLineBarrier:SetActive(not roundState)
@@ -375,7 +422,7 @@ function self:ClientAwake()
     waitingForPlayersEvent:Connect(function(event, currentPathColorsOnServer)
         playerTeleportationRequest.FireServer(playerTeleportationRequest, respawnPoint.transform.position)  
         finishLine.gameObject:SetActive(true)
-        startClientTimerWithTime(10, false)        
+        startClientTimerWithTime(lobbyTime, false)        
         mainUI.updateRoundColor("")
         mainUI.setMessageText("Waiting For Players")
         mainUI.setRoundText("ROUND 0/15")

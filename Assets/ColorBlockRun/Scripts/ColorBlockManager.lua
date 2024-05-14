@@ -37,7 +37,7 @@ function updatePlayerColor(colorKey, blockIndex, isDisabled)
     if(not isDisabled) then     
         currentBlockSelected = blockIndex
     end
-    gameManagerReference:GetComponent("GameplayManager").serverUpdateColorRequest:FireServer(colorKey, isDisabled)
+    gameManagerReference:GetComponent("GameplayManager").serverUpdateColorRequest:FireServer(colorKey, blockIndex, isDisabled)
     --print("Current Index on which color we are is : ", blockIndex)
 end
 
