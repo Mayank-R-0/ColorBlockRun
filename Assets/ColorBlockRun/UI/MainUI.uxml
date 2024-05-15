@@ -38,17 +38,32 @@
       </hr:UILabel>
     </VisualElement>
 
-    <VisualElement name="LeaderboardContainer" style="flex-grow: 1; align-items: center; align-self: center; justify-content: flex-start; -unity-background-scale-mode: stretch-to-fill; flex-basis: auto; position: absolute; height: 250px; width: 300px; left: auto; flex-direction: column; margin-top: 0; top: 190px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; background-color: rgba(0, 0, 0, 0.59);">
-      <Label tabindex="-1" text="LEADERBOARD" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LeaderboardTitle" style="width: 280px; height: 20px; align-self: center; -unity-text-align: middle-center; white-space: normal; font-size: 15px; -unity-font-style: bold; color: rgb(255, 255, 255); align-items: stretch; flex-direction: column; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0); padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+    <VisualElement name="LeaderboardContainer">
+      <Label tabindex="-1" text="LEADERBOARD" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LeaderboardTitle" />
       <VisualElement style="flex-grow: 1; width: 280px; height: 30px; flex-direction: row; align-items: stretch; justify-content: space-between;">
           <Label tabindex="-1" text="Rank" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; align-self: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
           <Label tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: middle-center; align-self: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
           <Label tabindex="-1" text="Score" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: middle-center; align-self: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
       </VisualElement>
-      <hr:UIScrollView horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" touch-scroll-type="Elastic" name="LeaderboardEntryContainer" style="width: 280px; margin-top: 0px; height: 210px;">
-  
+      <hr:UIScrollView horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" touch-scroll-type="Elastic" name="LeaderboardEntryContainer">
       </hr:UIScrollView>
     </VisualElement>
+
+    <VisualElement name="PositionContainer" picking-mode="Ignore">
+      <VisualElement name="Position1" picking-mode="Ignore" class="positions">
+          <Image name="Image1" picking-mode="Ignore" class="positionImage" />
+          <Label tabindex="-1" picking-mode="Ignore" text="#1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Position" class="positionText" />
+      </VisualElement>
+      <VisualElement name="Position2" picking-mode="Ignore">
+          <Image name="Image2" picking-mode="Ignore" class="positionImage" />
+          <Label tabindex="-1" picking-mode="Ignore" text="#2" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Position" class="positionText" />
+      </VisualElement>
+      <VisualElement name="Position3" picking-mode="Ignore" class="positions">
+          <Image name="Image3" picking-mode="Ignore" class="positionImage" />
+          <Label tabindex="-1" picking-mode="Ignore" text="#3" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Position" class="positionText" />
+      </VisualElement>
+    </VisualElement>
+
   </hr:UILuaView>
 </UXML>
 

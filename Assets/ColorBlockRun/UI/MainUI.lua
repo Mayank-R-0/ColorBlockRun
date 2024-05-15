@@ -34,7 +34,47 @@ local backgroundColorFour : VisualElement = nil
 --!Bind
 local backgroundColorFive : VisualElement = nil
 
+--!Bind
+local PositionContainer : VisualElement = nil
+--!Bind
+local Position1 : VisualElement = nil
+--!Bind
+local Image1 : Image = nil
+--!Bind
+local Position2 : VisualElement = nil
+--!Bind
+local Image2 : Image = nil
+--!Bind
+local Position3 : VisualElement = nil
+--!Bind
+local Image4 : Image = nil
+
+function showPositions(position, playerImage)
+    PositionContainer.visible = true
+    print("reached player with position" .. position .. " player name : ".. playerImage.name)
+    if position == 1 then
+        --Image1.image = 
+        Position1.visible = true
+    elseif position == 2 then
+        --Image2.image = 
+        Position2.visible = true
+    elseif position == 3 then
+        --Image3.image = 
+        Position3.visible = true
+    end
+end
+
+function setPositionsContainerState(state)
+    PositionContainer.visible = state
+    Position1.visible = state
+    Position2.visible = state
+    Position3.visible = state
+end
+
+
 function fillLeaderboard(playersStatsForLeaderboard)
+
+    setPositionsContainerState(false)
 
     LeaderboardEntryContainer:Clear()
 
@@ -75,6 +115,7 @@ function startLoad()
     MessageContainer.visible = false
     InstructionContainer.visible = false
     setLeaderboardState(false)
+    setPositionsContainerState(false)
 end
 
 function enableInstructions()

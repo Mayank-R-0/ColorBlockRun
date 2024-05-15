@@ -305,3 +305,121 @@
     margin-bottom: 2px;
     margin-left: 2px;
 }
+
+.main-u-i #LeaderboardContainer{
+    flex-grow: 1; 
+    align-items: center; 
+    align-self: center; 
+    justify-content: flex-start; 
+    -unity-background-scale-mode: stretch-to-fill; 
+    flex-basis: auto; 
+    position: absolute; 
+    height: 250px; 
+    width: 300px; 
+    left: auto; 
+    flex-direction: column; 
+    margin-top: 0; 
+    top: 190px; 
+    padding-top: 10px; 
+    padding-right: 10px; 
+    padding-bottom: 10px; 
+    padding-left: 10px; 
+    background-color: rgba(0, 0, 0, 0.59);
+}
+
+.main-u-i #LeaderboardTitle{
+    width: 280px; 
+    height: 20px; 
+    align-self: center; 
+    -unity-text-align: middle-center; 
+    white-space: normal; 
+    font-size: 15px; 
+    -unity-font-style: bold; 
+    color: rgb(255, 255, 255); 
+    align-items: stretch; 
+    flex-direction: column; 
+    -unity-text-outline-width: 1px; 
+    -unity-text-outline-color: rgb(0, 0, 0); 
+    padding-top: 0; 
+    padding-right: 0; 
+    padding-bottom: 0; 
+    padding-left: 0; 
+    margin-top: 0; 
+    margin-right: 0; 
+    margin-bottom: 0; 
+    margin-left: 0;
+}
+
+.main-u-i #LeaderboardEntryContainer{
+    width: 280px; 
+    margin-top: 0px; 
+    height: 210px;
+}
+
+.main-u-i #PositionContainer{
+    flex-grow: 1; 
+    align-items: center; 
+    align-self: center; 
+    justify-content: flex-start; 
+    -unity-background-scale-mode: stretch-to-fill; 
+    flex-basis: auto; 
+    position: absolute; 
+    height: 100px; 
+    width: 320px; 
+    left: auto; 
+    flex-direction: row; 
+    margin-top: 0; 
+    top: 190px; 
+    padding-top: 0; 
+    padding-right: 0; 
+    padding-bottom: 0; 
+    padding-left: 0; 
+    display: flex;
+}
+
+.main-u-i .positions{
+    flex-grow: 1; 
+    width: 100px; 
+    height: 100px; 
+    flex-direction: column; 
+    align-items: stretch; 
+    justify-content: space-between; 
+    position: relative; 
+    align-self: auto;
+}
+
+.main-u-i #Position2{
+    flex-grow: 1; 
+    width: 100px; 
+    height: 100px; 
+    flex-direction: column; 
+    align-items: stretch; 
+    justify-content: space-between; 
+    position: relative; 
+    align-self: auto; 
+    margin-right: 10px; 
+    margin-left: 10px; 
+    padding-top: 0; 
+    padding-right: 0; 
+    padding-bottom: 0; 
+    padding-left: 0;
+}
+
+.main-u-i .positionImage{
+    flex-grow: 1; 
+    position: absolute; 
+    width: 100px; 
+    height: 100px; 
+    background-color: rgb(0, 0, 0);
+}
+
+.main-u-i .positionText{
+    -unity-text-align: middle-center; 
+    align-self: stretch; 
+    color: rgb(255, 255, 255); 
+    -unity-font-style: bold; 
+    -unity-text-outline-width: 1px; 
+    -unity-text-outline-color: rgb(0, 0, 0); 
+    justify-content: flex-start; 
+    top: 70%;
+}

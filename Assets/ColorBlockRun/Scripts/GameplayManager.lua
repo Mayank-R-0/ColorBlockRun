@@ -53,6 +53,7 @@ local playerTeleportationRequest = Event.new("PlayerTeleportationRequest")
 local playerTeleportationEvent = Event.new("PlayerTeleportationEvent")
 
 local gameEndReachedAtClientRequest = Event.new("GameEndReachedAtClientRequest")
+local playerPositionReachedEvent = Event.new("PlayerPositionReachedEvent")
 local serverGameTimerSyncEvent = Event.new("ServerGameTimerSyncEvent")
 local restartGameEvent = Event.new("RestartGameEvent")
 local waitingForPlayersEvent = Event.new("WaitingForPlayersEvent")
@@ -314,6 +315,10 @@ function BindClientEventsToServer()
         print("players reached end .. ! : ", #winPlayers)
         print("players in race .. !", #currentRacePlayers)
 
+        if(#winPlayers <= 3) then
+            playerPositionReachedEvent:FireAllClients(player, #winPlayers)
+        end
+
 
         if #winPlayers >= #currentRacePlayers then
             endTheCurrentGame = true
@@ -432,6 +437,10 @@ function self:ClientAwake()
             colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(currentPathColorsOnServer)
         end
         colorBlockManager:GetComponent("ColorBlockManager").UpdateWaitGameStatus(false)
+    end)
+
+    playerPositionReachedEvent:Connect(function(winningPlayer, positionAt)
+        mainUI.showPositions(positionAt, winningPlayer)
     end)
 
     mainUI.startLoad()
