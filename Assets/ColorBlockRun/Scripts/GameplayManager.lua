@@ -18,6 +18,10 @@ local deathSound : AudioSource = nil
 local finishLine : GameObject = nil
 --!SerializeField
 local startLineBarrier : GameObject = nil
+
+--!SerializeField
+local lobbySpwanPoints : Transform = nil
+
 local mainUI = nil
 
 
@@ -285,6 +289,8 @@ function UpdateCurrentPlayerColor(colorKey)
 end
 
 function gameEndReachedAtClient()
+    spwanPointLobby=lobbySpwanPoints:GetChild(math.random(0, lobbySpwanPoints.childCount-1)).transform
+    playerTeleportationRequest:FireServer(spwanPointLobby.position.x,spwanPointLobby.position.y,spwanPointLobby.position.z,true)
     gameEndReachedAtClientRequest.FireServer(gameEndReachedAtClientRequest)
     showInMessageBox = false
     mainUI.setMessageText("Race Completed..!")
@@ -301,15 +307,14 @@ function BindClientEventsToServer()
         clientDataRecieveEvent.FireAllClients(clientDataRecieveEvent, player, currentRound, currentColor, colorString, gameStarted, waitingForPlayer)
     end)
 
-    playerTeleportationRequest:Connect(function(player, position)
+    playerTeleportationRequest:Connect(function(player, x,y,z,isInLobby)
         --print("respawn position is : ", position)
-        player.character.transform.position = position
-        playerTeleportationEvent:FireAllClients(player)
+        player.character.transform.position = Vector3.new(x,y,z)
+        playerTeleportationEvent:FireAllClients(player,x,y,z,isInLobby)
     end)
 
     gameEndReachedAtClientRequest:Connect(function(player)
         print("Player End Reached At Server.. ! Adding to winner list : ", player.name)
-
         table.insert(winPlayers, #winPlayers + 1, player)
 
         print("players reached end .. ! : ", #winPlayers)
@@ -352,7 +357,9 @@ function self:ClientAwake()
         colorBlockManager:GetComponent("ColorBlockManager").UpdateGamePathColors(colorblocksString)
         if(gameStarted == true) then
             mainUI.setMessageText("Wait fot the next race")
-            startClientTimerWithTime(roundTime, false)            
+            startClientTimerWithTime(roundTime, false)    
+            spwanPointLobby=lobbySpwanPoints:GetChild(math.random(0, lobbySpwanPoints.childCount-1)).transform
+            playerTeleportationRequest:FireServer(spwanPointLobby.position.x,spwanPointLobby.position.y,spwanPointLobby.position.z,true)       
             colorBlockManager:GetComponent("ColorBlockManager").UpdateWaitGameStatus(true)
         elseif(waitingForPlayer) then
             mainUI.setMessageText("Waiting For Players")
@@ -377,7 +384,7 @@ function self:ClientAwake()
             if(currentPlayerColor == nil or currentPlayerColor =="") then 
             
             elseif(currentPlayerColor ~= currentColor and raceWon == false) then 
-                playerTeleportationRequest:FireServer(respawnPoint.transform.position)
+                playerTeleportationRequest:FireServer(respawnPoint.transform.position.x,respawnPoint.transform.position.y,respawnPoint.transform.position.z,false)
                 deathSound:Play()
             end
             mainUI.updateRoundColor("")
@@ -392,10 +399,11 @@ function self:ClientAwake()
         colorBlockManager:GetComponent("ColorBlockManager").ApplyBlockStates(currentColor, roundState)
     end)
 
-    playerTeleportationEvent:Connect(function(player)
-        player.character:Teleport(respawnPoint.transform.position)
+    playerTeleportationEvent:Connect(function(player,x,y,z,isInLobby)
+        player.character:Teleport(Vector3.new(x, y, z))
         if(player ~= client.localPlayer) then return end
-        cameraObject:GetComponent("RTSCamera").CenterOn(Vector3.new(0,0,0))
+        cameraObject:GetComponent("MainCameraMovementControl").IsInLobby=isInLobby
+        cameraObject:GetComponent("RTSCamera").CenterOn(Vector3.new(x,y,z))
         currentPlayerColor = ""
     end)
 
@@ -409,7 +417,7 @@ function self:ClientAwake()
     serverUpdateColorEvent:Connect(function(player, colorKey, isDisabled)
         if player ~= client.localPlayer then return end 
         if isDisabled then             
-            playerTeleportationRequest:FireServer(respawnPoint.transform.position)
+            playerTeleportationRequest:FireServer(respawnPoint.transform.position.x,respawnPoint.transform.position.y,respawnPoint.transform.position.z,false)
             deathSound:Play()
         else
             UpdateCurrentPlayerColor(colorKey)
@@ -425,7 +433,7 @@ function self:ClientAwake()
     end)
 
     waitingForPlayersEvent:Connect(function(event, currentPathColorsOnServer)
-        playerTeleportationRequest.FireServer(playerTeleportationRequest, respawnPoint.transform.position)  
+        playerTeleportationRequest:FireServer(respawnPoint.transform.position.x,respawnPoint.transform.position.y,respawnPoint.transform.position.z,false)  
         finishLine.gameObject:SetActive(true)
         startClientTimerWithTime(lobbyTime, false)        
         mainUI.updateRoundColor("")
