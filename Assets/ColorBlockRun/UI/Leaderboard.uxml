@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="UnityEngine.UIElements"
+    xmlns:hr="Highrise.UI"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
+>
+
+  <hr:UILuaView class="leaderboard">
+
+    <VisualElement name="LeaderboardContainer">
+      <hr:UILabel tabindex="-1" text="LEADERBOARD" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LeaderboardTitle" />
+      <VisualElement style="flex-grow: 1; width: 280px; height: 30px; flex-direction: row; align-items: stretch; justify-content: space-between;">
+          <Label tabindex="-1" text="Rank" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; align-self: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
+          <Label tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: middle-center; align-self: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
+          <Label tabindex="-1" text="Score" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: middle-center; align-self: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
+      </VisualElement>
+      <hr:UIScrollView horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" touch-scroll-type="Elastic" name="LeaderboardEntryContainer">
+      </hr:UIScrollView>
+
+      <VisualElement name = "SelfEntry" style="flex-grow: 1; width: 280px; height: 30px; flex-direction: row; align-items: stretch; justify-content: space-between; margin-top: 20px; background-color: rgba(0, 255, 255, 255); ">
+          <hr:UILabel tabindex="-1" text="Rank" parse-escape-sequences="true" display-tooltip-when-elided="true" name = "SelfRank" style="-unity-text-align: middle-left; align-self: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
+          <hr:UILabel tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" name = "SelfName" style="-unity-text-align: middle-center; align-self: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
+          <hr:UILabel tabindex="-1" text="Score" parse-escape-sequences="true" display-tooltip-when-elided="true" name = "SelfScore" style="-unity-text-align: middle-center; align-self: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
+      </VisualElement>
+    </VisualElement>
+
+  </hr:UILuaView>
+
+</UXML>

@@ -53,3 +53,21 @@ function splitRandomNumbersString(dataString)
     end
     return substrings
 end
+
+-- Method that convert dictionary of Leaderboard Data into sorted array
+function getPlayerLeaderboardSortedList(onStorageLeaderboardData)
+    leaderboardList={}
+    for k,v in pairs(onStorageLeaderboardData) do
+        table.insert(leaderboardList,{["Name"]=k,["Value"]=v})
+    end
+    table.sort(leaderboardList,compareByScore)
+    return leaderboardList
+end
+function compareByScore(player1, player2)
+    return player1["Value"] > player2["Value"]
+end
+
+-- Method to get Current Day
+function getCurrentDay()
+    return os.date("*t").wday
+end

@@ -3,6 +3,7 @@
 ]]
 
 local utilsScript = require("Utils")
+local serverStorageManager = require("ServerStorageDataManager")
 
 --!SerializeField
 local colorBlockManager : GameObject = nil
@@ -197,6 +198,9 @@ function endGame()
             playerScore = playerScoreBasedOnPosition
         }
         table.insert(playersStatsForLeaderboard, currentPosition, value)
+
+        serverStorageManager.UpdateLeaderBoardFromServer(winPlayers[i], playerScoreBasedOnPosition)
+
         currentPosition += 1
         print("Calculating win players")
     end
@@ -212,6 +216,8 @@ function endGame()
             playerName = storageArray[i].player.name,
             playerScore = utilsScript.getScore("NotCompleted")
         }
+
+        serverStorageManager.UpdateLeaderBoardFromServer(storageArray[i].player, utilsScript.getScore("NotCompleted"))
 
         table.insert(playersStatsForLeaderboard, currentPosition, value)
         currentPosition += 1
@@ -305,6 +311,7 @@ function BindClientEventsToServer()
     clientConnectionRequest:Connect(function(player, args)
         print("client connected : ", player.name)
         clientDataRecieveEvent.FireAllClients(clientDataRecieveEvent, player, currentRound, currentColor, colorString, gameStarted, waitingForPlayer)
+        serverStorageManager.UpdateLeaderBoardFromServer(player, 0)
     end)
 
     playerTeleportationRequest:Connect(function(player, x,y,z,isInLobby)
