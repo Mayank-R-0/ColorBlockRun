@@ -208,6 +208,10 @@ function endGame()
     local storageArray = getParticipatedPlayers()
     table.sort(storageArray, compareByBlockIndex)
     for i = 1, #storageArray, 1 do 
+
+        storageArray[i].player.character.transform.position = Vector3.new(1000,0,0)
+        playerTeleportationEvent:FireAllClients(storageArray[i].player,1000,0,0,true)
+
         if storageArray[i].blockIndex == 0 then continue end
         local value = {
             positionOnLeaderboard = currentPosition,
@@ -222,7 +226,7 @@ function endGame()
     restartGameEvent:FireAllClients(playersStatsForLeaderboard)
     --print("Current paths on server are : ", colorString)
     generatePathColorsForCurrentGame()
-    Timer.After(10, function()  
+    Timer.After(30, function()  
         currentColor = ""
         currentRound = 0
         roundState = false
@@ -502,4 +506,5 @@ function restartGameAtClient(playersStatsForLeaderboard)
     startLineBarrier:SetActive(true)
     finishLine.gameObject:SetActive(false)
     mainUI.fillLeaderboard(playersStatsForLeaderboard)
+    Timer.After(10, function() mainUI.setLeaderboardState(false) end)
 end

@@ -21,12 +21,14 @@ function self:ClientAwake()
     LeaderboardContainer.visible = false
     function self:OnTriggerEnter(other:Collider)
         if(other.gameObject:GetComponent(Character)~=nil) then
+            self:GetComponent(MeshRenderer).enabled=true
             LeaderboardContainer.visible = true
         end
     end
 
     function self:OnTriggerExit(other:Collider)
         if(other.gameObject:GetComponent(Character)~=nil) then
+            self:GetComponent(MeshRenderer).enabled=false
             LeaderboardContainer.visible = false
         end
     end
