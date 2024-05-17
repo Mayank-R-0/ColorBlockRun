@@ -2,12 +2,9 @@
 
 local utilsScript = require("Utils")
 
-local serverDataGetRequest = Event.new("serverDataGetRequest")
-
 local overallLeaderboardKey = "OverallLeaderboardDataTable"
 local seasonalLeaderboardKey = "SeasonalLeaderboardDataTable"
 
-local updatePlayerDataRequest = Event.new("UpdatePlayerDataRequest")
 local updatePlayerDataResponse = Event.new("UpdatePlayerDataResponse")
 
 local overallLeaderBoardUpdatedResponse = Event.new("OverallLeaderBoardUpdatedResponse")
@@ -26,64 +23,51 @@ function DeleteLeaderboardData()
 
 end
 
-function updatePlayerDataOnLeaderboard(newScore)
-    updatePlayerDataRequest:FireServer(newScore)
-end
-
 local function BindServerResponseToClient()
     
     overallLeaderBoardUpdatedResponse:Connect(function(updatedOverallLeaderboardData)
-        listOFLeaderboard=utilsScript.getPlayerLeaderboardSortedList(updatedOverallLeaderboardData)
-        overallLeaderboardUI:GetComponent("Leaderboard").SetupLeaderboard(listOFLeaderboard)
+        overallLeaderboardUI:GetComponent("Leaderboard").SetupLeaderboard(updatedOverallLeaderboardData)
     end)
 
     seasonalLeaderBoardUpdatedResponse:Connect(function(updatedSeasonalLeaderboardData)
-        listOFLeaderboard=utilsScript.getPlayerLeaderboardSortedList(updatedSeasonalLeaderboardData)
-
-        seasonalLeaderboardUI:GetComponent("Leaderboard").SetupLeaderboard(listOFLeaderboard)
-        
+        seasonalLeaderboardUI:GetComponent("Leaderboard").SetupLeaderboard(updatedSeasonalLeaderboardData)
     end)
 
 end
 
 local function ClientInitialize()
 
-    --serverDataGetRequest:FireServer()
-
 end
 
 
-
-
-local function UpdateLeaderBoard(player,newScore,key,eventToEmit)
+local function UpdateLeaderBoard(players,key,eventToEmit)
     Storage.UpdateValue(key,
         function(onStorageLeaderboardData)
-            if onStorageLeaderboardData == nil then
-                onStorageLeaderboardData = {
-                    [player.name] = newScore
+            if(onStorageLeaderboardData==nil) then
+                onStorageLeaderboardData=
+                {
+                    ["Test"]=0
                 }
-                print("1. Updating value of " .. player.name .. " with " .. tostring(newScore))
-                eventToEmit:FireAllClients(onStorageLeaderboardData)
-                return onStorageLeaderboardData
-            elseif(onStorageLeaderboardData[player.name] == nil) then
-                print("2. Updating value of " .. player.name .. " with " .. tostring(newScore))
-                onStorageLeaderboardData[player.name] = newScore
-                eventToEmit:FireAllClients(onStorageLeaderboardData)
-                return onStorageLeaderboardData
-            else
-                onStorageLeaderboardData[player.name]=onStorageLeaderboardData[player.name]+newScore
-                print("3. Updating value of " .. player.name .. " with " .. tostring(newScore))
-                eventToEmit:FireAllClients(onStorageLeaderboardData)
-                return onStorageLeaderboardData
             end
+            for playerData in players do
+                if(onStorageLeaderboardData[players[playerData].playerName] == nil) then
+                    onStorageLeaderboardData[players[playerData].playerName]=players[playerData].playerScore
+                    print("1. Updating value of " .. players[playerData].playerName .. " with " .. tostring(players[playerData].playerScore))
+                else
+                    onStorageLeaderboardData[players[playerData].playerName]=onStorageLeaderboardData[players[playerData].playerName]+players[playerData].playerScore
+                    print("2. Updating value of " .. players[playerData].playerName .. " with " .. tostring(players[playerData].playerScore))
+                end
+            end
+            eventToEmit:FireAllClients(utilsScript.getPlayerLeaderboardSortedList(onStorageLeaderboardData))
+            return onStorageLeaderboardData
         end
         )
 end
 
-function UpdateLeaderBoardFromServer(player, newScore)
+function UpdateLeaderBoardFromServer(players)
 
-    UpdateLeaderBoard(player, newScore, overallLeaderboardKey, overallLeaderBoardUpdatedResponse)
-    UpdateLeaderBoard(player, newScore, seasonalLeaderboardKey, seasonalLeaderBoardUpdatedResponse)
+    UpdateLeaderBoard(players, overallLeaderboardKey, overallLeaderBoardUpdatedResponse)
+    UpdateLeaderBoard(players, seasonalLeaderboardKey, seasonalLeaderBoardUpdatedResponse)
 
 end
 
@@ -95,21 +79,10 @@ end
 
 local function BindClientRequestsToServer()
 
-
-    updatePlayerDataRequest:Connect(function(player, newScore)
-        UpdateLeaderBoard(player,newScore,overallLeaderboardKey,overallLeaderBoardUpdatedResponse)
-        UpdateLeaderBoard(player, newScore/2, seasonalLeaderboardKey, seasonalLeaderBoardUpdatedResponse)
-    end)
-    serverDataGetRequest:Connect(
-        function(player) 
-            getUpdatedLeaderboard(player,overallLeaderboardKey, overallLeaderBoardUpdatedResponse)
-            getUpdatedLeaderboard(player,seasonalLeaderboardKey, seasonalLeaderBoardUpdatedResponse)
-        end
-    )
 end
 
 local function ServerInitialize()
-    --DeleteLeaderboardData()
+    -- DeleteLeaderboardData()
 end
 
 

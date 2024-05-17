@@ -199,31 +199,26 @@ function endGame()
         }
         table.insert(playersStatsForLeaderboard, currentPosition, value)
 
-        serverStorageManager.UpdateLeaderBoardFromServer(winPlayers[i], playerScoreBasedOnPosition)
-
+        
         currentPosition += 1
         print("Calculating win players")
     end
+    
 
     local storageArray = getParticipatedPlayers()
     table.sort(storageArray, compareByBlockIndex)
-
     for i = 1, #storageArray, 1 do 
         if storageArray[i].blockIndex == 0 then continue end
-
         local value = {
             positionOnLeaderboard = currentPosition,
             playerName = storageArray[i].player.name,
             playerScore = utilsScript.getScore("NotCompleted")
         }
-
-        serverStorageManager.UpdateLeaderBoardFromServer(storageArray[i].player, utilsScript.getScore("NotCompleted"))
-
         table.insert(playersStatsForLeaderboard, currentPosition, value)
         currentPosition += 1
     end
 
-
+    serverStorageManager.UpdateLeaderBoardFromServer(playersStatsForLeaderboard)
     restartGameEvent:FireAllClients(playersStatsForLeaderboard)
     --print("Current paths on server are : ", colorString)
     generatePathColorsForCurrentGame()
@@ -311,7 +306,14 @@ function BindClientEventsToServer()
     clientConnectionRequest:Connect(function(player, args)
         print("client connected : ", player.name)
         clientDataRecieveEvent.FireAllClients(clientDataRecieveEvent, player, currentRound, currentColor, colorString, gameStarted, waitingForPlayer)
-        serverStorageManager.UpdateLeaderBoardFromServer(player, 0)
+        serverStorageManager.UpdateLeaderBoardFromServer(
+            {
+                {
+                    playerName = player.name,
+                    playerScore = 0
+                }
+            }
+        )
     end)
 
     playerTeleportationRequest:Connect(function(player, x,y,z,isInLobby)
