@@ -110,7 +110,6 @@ local mt_currentRacePlayers = {
 setmetatable(currentRacePlayers, mt_currentRacePlayers)
 
 
-
 --- Handling Teleportation
 local changeTeleporterState = Event.new("changeTeleporterState")
 local playerTeleportatedToRace = Event.new("playerTeleportatedToRace")
@@ -255,7 +254,17 @@ function endGame()
         table.insert(playersStatsForLeaderboard, currentPosition, value)
         currentPosition += 1
     end
-    if(#playersStatsForLeaderboard<=0) then return end 
+    if(#playersStatsForLeaderboard<=0) then
+        currentColor = ""
+        currentRound = 0
+        roundState = false
+        waitingForPlayer = false
+        gameStarted = false
+        table.clear(winPlayers)
+        endTheCurrentGame = false
+        changeTeleporterState:FireAllClients(true)
+        return 
+    end 
     serverStorageManager.UpdateLeaderBoardFromServer(playersStatsForLeaderboard)
     restartGameEvent:FireAllClients(playersStatsForLeaderboard)
     --print("Current paths on server are : ", colorString)
@@ -274,9 +283,9 @@ function endGame()
         table.clear(winPlayers)
         endTheCurrentGame = false
         changeTeleporterState:FireAllClients(true)
-        if(#players < minimumNumberOfPlayers) then return end
-        waitingForPlayersEvent:FireAllClients(waitingForPlayersEvent, colorString)
-        StartWaitingForPlayer()
+        -- if(#players < minimumNumberOfPlayers) then return end
+        -- waitingForPlayersEvent:FireAllClients(waitingForPlayersEvent, colorString)
+        -- StartWaitingForPlayer()
     end)
 end
 
@@ -339,9 +348,7 @@ function gameEndReachedAtClient()
     Timer.After(
         5,
         function()
-            if(waitingForPlayer==false) then
-                playerTeleportationRequest:FireServer(spwanPointLobby.position.x,spwanPointLobby.position.y,spwanPointLobby.position.z,true)    
-            end
+            playerTeleportationRequest:FireServer(spwanPointLobby.position.x,spwanPointLobby.position.y,spwanPointLobby.position.z,true)    
         end
     )
     gameEndReachedAtClientRequest.FireServer(gameEndReachedAtClientRequest)
