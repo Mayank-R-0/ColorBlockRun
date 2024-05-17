@@ -23,6 +23,9 @@ local startLineBarrier : GameObject = nil
 --!SerializeField
 local lobbySpwanPoints : Transform = nil
 
+--!SerializeField
+local teleporter : GameObject = nil
+
 local mainUI = nil
 
 
@@ -78,6 +81,10 @@ local startPosition = nil
 
 local winPlayers = {}
 
+function IsWaitingForPlayers()
+    return waitingForPlayer
+end
+
 local players = {}
 local mt_players = {
     __len = function(tbl)
@@ -103,15 +110,43 @@ local mt_currentRacePlayers = {
 setmetatable(currentRacePlayers, mt_currentRacePlayers)
 
 
+
+--- Handling Teleportation
+local changeTeleporterState = Event.new("changeTeleporterState")
+local playerTeleportatedToRace = Event.new("playerTeleportatedToRace")
+
+function ChangeTeleportedState(state)
+    teleporter:SetActive((state))
+end
+
+function TeleportPlayer()
+    print("Called Teleport")
+    playerTeleportatedToRace:FireServer()
+end
+
+function PlayerTeleportedToRace(player)
+    player.character.transform.position = Vector3.new(0,0,0)
+    playerTeleportationEvent:FireAllClients(player,0,0,0,false)
+    players[player] = {
+        player = player,
+        playerId = player.id,
+        blockIndex = 0
+    }
+    if(#players >= minimumNumberOfPlayers) then
+        if(not waitingForPlayer) then
+            waitingForPlayersEvent:FireAllClients(waitingForPlayersEvent, colorString)
+            if (not gameStarted) then
+                StartWaitingForPlayer()
+            end
+        end
+    end
+end
+
+--- Handling Teleportation
+
 local function TrackPlayers(game, characterCallback)
     scene.PlayerJoined:Connect(function(scene, player)
-        players[player] = {
-            player = player,
-            playerId = player.id,
-            blockIndex = 0
-        }
-
-
+        changeTeleporterState:FireClient(player,not gameStarted)
         player.CharacterChanged:Connect(function(player, character)
             local playerinfo = players[player]
             if(character == nil) then
@@ -122,14 +157,15 @@ local function TrackPlayers(game, characterCallback)
                 characterCallback(playerinfo)
             end
         end)
-
-        if(#players >= minimumNumberOfPlayers) then
-            if(not waitingForPlayer) then
-                if (not gameStarted) then
-                    StartWaitingForPlayer()
-                end
+        Timer.After(
+            0, 
+            function()
+                -- spwanPointLobby=lobbySpwanPoints:GetChild(math.random(0, lobbySpwanPoints.childCount-1)).transform
+                -- print("Respawning at : "..tostring(spwanPointLobby.x)..tostring(spwanPointLobby.x)..tostring(spwanPointLobby.x))
+                player.character.transform.position = Vector3.new(1000,0,0)
+                playerTeleportationEvent:FireAllClients(player,1000,0,0,true)
             end
-        end
+        )
     end)
 
     scene.PlayerLeft:Connect(function(scene, player)
@@ -208,6 +244,8 @@ function endGame()
     local storageArray = getParticipatedPlayers()
     table.sort(storageArray, compareByBlockIndex)
     for i = 1, #storageArray, 1 do 
+        storageArray[i].player.character.transform.position = Vector3.new(1000,0,0)
+        playerTeleportationEvent:FireAllClients(storageArray[i].player,1000,0,0,true)
         if storageArray[i].blockIndex == 0 then continue end
         local value = {
             positionOnLeaderboard = currentPosition,
@@ -217,11 +255,16 @@ function endGame()
         table.insert(playersStatsForLeaderboard, currentPosition, value)
         currentPosition += 1
     end
-
+    if(#playersStatsForLeaderboard<=0) then return end 
     serverStorageManager.UpdateLeaderBoardFromServer(playersStatsForLeaderboard)
     restartGameEvent:FireAllClients(playersStatsForLeaderboard)
     --print("Current paths on server are : ", colorString)
     generatePathColorsForCurrentGame()
+    
+    for k,v in pairs(players) do 
+        players[k]=nil
+    end
+
     Timer.After(10, function()  
         currentColor = ""
         currentRound = 0
@@ -230,6 +273,7 @@ function endGame()
         gameStarted = false
         table.clear(winPlayers)
         endTheCurrentGame = false
+        changeTeleporterState:FireAllClients(true)
         if(#players < minimumNumberOfPlayers) then return end
         waitingForPlayersEvent:FireAllClients(waitingForPlayersEvent, colorString)
         StartWaitingForPlayer()
@@ -241,6 +285,7 @@ function StartWaitingForPlayer()
     print("Waiting for Players")
 
     waitingForPlayer = true
+    changeTeleporterState:FireAllClients(true)
     lobbyTimer = Timer.After(lobbyTime, function() 
         StartGameplayRounds()    
     end)
@@ -248,7 +293,7 @@ end
 
 function StartGameplayRounds()
     gameStarted = true
-
+    changeTeleporterState:FireAllClients(false)
     print("Waiting for player is over.. ! Starting game")
 
     currentRacePlayers = table.clone(players)
@@ -291,7 +336,14 @@ end
 
 function gameEndReachedAtClient()
     spwanPointLobby=lobbySpwanPoints:GetChild(math.random(0, lobbySpwanPoints.childCount-1)).transform
-    playerTeleportationRequest:FireServer(spwanPointLobby.position.x,spwanPointLobby.position.y,spwanPointLobby.position.z,true)
+    Timer.After(
+        5,
+        function()
+            if(waitingForPlayer==false) then
+                playerTeleportationRequest:FireServer(spwanPointLobby.position.x,spwanPointLobby.position.y,spwanPointLobby.position.z,true)    
+            end
+        end
+    )
     gameEndReachedAtClientRequest.FireServer(gameEndReachedAtClientRequest)
     showInMessageBox = false
     mainUI.setMessageText("Race Completed..!")
@@ -303,6 +355,12 @@ end
 
 
 function BindClientEventsToServer()
+
+    playerTeleportatedToRace:Connect(
+        function(player)
+            PlayerTeleportedToRace(player)
+        end
+    )
     clientConnectionRequest:Connect(function(player, args)
         print("client connected : ", player.name)
         clientDataRecieveEvent.FireAllClients(clientDataRecieveEvent, player, currentRound, currentColor, colorString, gameStarted, waitingForPlayer)
@@ -357,7 +415,12 @@ function self:ClientAwake()
 
     mainUI = uiManager:GetComponent("MainUI")
     startPosition = Camera.main.transform.position
-
+    
+    changeTeleporterState:Connect(
+        function(state)
+            ChangeTeleportedState(state)
+        end
+    )
     clientDataRecieveEvent:Connect(function(player, currentRoundOnServer, currentColorOnServer, colorblocksString, gameStarted, waitingForPlayer)
         if(player ~= client.localPlayer) then return end
 
@@ -442,7 +505,7 @@ function self:ClientAwake()
     end)
 
     waitingForPlayersEvent:Connect(function(event, currentPathColorsOnServer)
-        playerTeleportationRequest:FireServer(respawnPoint.transform.position.x,respawnPoint.transform.position.y,respawnPoint.transform.position.z,false)  
+        -- playerTeleportationRequest:FireServer(respawnPoint.transform.position.x,respawnPoint.transform.position.y,respawnPoint.transform.position.z,false)  
         finishLine.gameObject:SetActive(true)
         startClientTimerWithTime(lobbyTime, false)        
         mainUI.updateRoundColor("")
@@ -502,4 +565,9 @@ function restartGameAtClient(playersStatsForLeaderboard)
     startLineBarrier:SetActive(true)
     finishLine.gameObject:SetActive(false)
     mainUI.fillLeaderboard(playersStatsForLeaderboard)
+
+    Timer.After(10, function()  
+        mainUI.updateRoundColor("")
+        mainUI.setMessageText("Waiting For Players")
+        mainUI.setRoundText("ROUND 0/15") mainUI.setLeaderboardState(false) end)
 end
