@@ -297,18 +297,6 @@ function endGame()
         table.insert(playersStatsForLeaderboard, currentPosition, value)
         currentPosition += 1
     end
-    if(#playersStatsForLeaderboard<=0) then
-        currentColor = ""
-        currentRound = 0
-        roundState = false
-        waitingForPlayer = false
-        gameStarted = false
-        table.clear(winPlayers)
-        endTheCurrentGame = false
-        changeTeleporterState:FireAllClients(true)
-        setTextForWaitingForRace:FireAllClients("")
-        return 
-    end 
     serverStorageManager.UpdateLeaderBoardFromServer(playersStatsForLeaderboard)
     restartGameEvent:FireAllClients(playersStatsForLeaderboard)
     --print("Current paths on server are : ", colorString)

@@ -76,6 +76,7 @@ end
 function fillLeaderboard(playersStatsForLeaderboard)
 
     setPositionsContainerState(false)
+    if(playersStatsForLeaderboard==nil or #playersStatsForLeaderboard) then return end
 
     LeaderboardEntryContainer:Clear()
 
