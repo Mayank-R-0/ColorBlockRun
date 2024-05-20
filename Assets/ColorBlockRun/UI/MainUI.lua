@@ -10,7 +10,8 @@ local timerLabel : UILabel = nil
 local messageLabel : UILabel = nil
 --!Bind
 local MessageContainer : VisualElement = nil
-
+--!Bind
+local messageLabelNextRace : UILabel = nil
 --!Bind
 local InstructionContainer : VisualElement = nil
 --!Bind
@@ -112,7 +113,7 @@ function startLoad()
     setRoundText("ROUND 0/15")
     updateRoundColor("")
     setTimerText("10")
-    MessageContainer.visible = false
+    hideMessageBox()
     InstructionContainer.visible = false
     setLeaderboardState(false)
     setPositionsContainerState(false)
@@ -158,12 +159,19 @@ function setTimerText(text)
 end
 
 function setMessageText(text)
+    print("Setting Text Message : "..text)
     messageLabel:SetPrelocalizedText(text, false)
-    MessageContainer.visible = true
+    MessageContainer.visible=true
+    messageLabel.visible=true
 end
-
+function SetNextRaceText(text)
+    messageLabelNextRace.SetPrelocalizedText(messageLabelNextRace, text, false)
+    messageLabelNextRace.visible=(text~="" and text~=nil)
+end
 function hideMessageBox()
+    print("Hiding Message Box")
     MessageContainer.visible = false
+    messageLabel.visible=false
 end
 
 function updateBackgroundColor(colorKey)

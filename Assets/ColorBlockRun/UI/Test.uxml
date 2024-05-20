@@ -51,4 +51,5 @@
             <ui:Label tabindex="-1" text="#3" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Position" style="-unity-text-align: middle-center; align-self: stretch; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0); justify-content: flex-start; top: 70%;" />
         </ui:VisualElement>
     </ui:VisualElement>
+    <ui:Label tabindex="-1" text="Waiting For Players .. !" parse-escape-sequences="true" display-tooltip-when-elided="true" name="messageLabelNextRace" style="align-self: center; -unity-text-align: middle-center; height: 40px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 4px; padding-right: 20px; padding-bottom: 4px; padding-left: 20px; -unity-font-style: bold; top: auto; bottom: -283px;" />
 </ui:UXML>

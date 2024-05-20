@@ -1,5 +1,10 @@
 --!Type(UI)
-
+--!SerializeField
+local isHud : boolean = false
+--!SerializeField
+local isHudTrue: boolean = false
+--!SerializeField
+local HUD : GameObject = nil
 --!SerializeField
 local isOverallLeaderboard : boolean = false
 
@@ -17,25 +22,37 @@ local SelfName : UILabel = nil
 --!Bind
 local SelfScore : UILabel = nil
 
+local leaderboard=nil
 function self:ClientAwake()
-    LeaderboardContainer.visible = false
+    if(isHud) then return end
     function self:OnTriggerEnter(other:Collider)
-        if(other.gameObject:GetComponent(Character)~=nil) then
-            self:GetComponent(MeshRenderer).enabled=true
-            LeaderboardContainer.visible = true
+        if(other.gameObject:GetComponent(Character)~=nil and other.gameObject:GetComponent(Character).player==client.localPlayer) then
+            -- self:GetComponent(MeshRenderer).enabled=true
+            -- LeaderboardContainer.visible = true
+            if(leaderboard~=nil) then
+                HUD:SetActive(true)
+                isHudTrue=true
+                HUD:GetComponent("Leaderboard").SetupLeaderboard(leaderboard)
+            end
         end
     end
 
     function self:OnTriggerExit(other:Collider)
-        if(other.gameObject:GetComponent(Character)~=nil) then
-            self:GetComponent(MeshRenderer).enabled=false
-            LeaderboardContainer.visible = false
+        if(other.gameObject:GetComponent(Character)~=nil and other.gameObject:GetComponent(Character).player==client.localPlayer) then
+            -- self:GetComponent(MeshRenderer).enabled=false
+            -- LeaderboardContainer.visible = false
+            HUD:SetActive(false)
+            isHudTrue=false
         end
     end
-end
+end 
 
 function SetupLeaderboard(LeaderboardData)
 
+    leaderboard=LeaderboardData
+    if(isHudTrue) then
+        HUD:GetComponent("Leaderboard").SetupLeaderboard(leaderboard)
+    end
     if isOverallLeaderboard then
         LeaderboardTitle:SetPrelocalizedText("OVERALL LEADERBOARD", false)
     else
@@ -75,6 +92,5 @@ function SetupLeaderboard(LeaderboardData)
 
         end
     end
-
 end
 

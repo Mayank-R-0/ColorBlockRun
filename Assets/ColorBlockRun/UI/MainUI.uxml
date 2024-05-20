@@ -63,7 +63,7 @@
           <Label tabindex="-1" picking-mode="Ignore" text="#3" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Position" class="positionText" />
       </VisualElement>
     </VisualElement>
-
+    <hr:UILabel tabindex="-1" text="Waiting For Players .. !" parse-escape-sequences="true" display-tooltip-when-elided="true" name="messageLabelNextRace" style="align-self: center; -unity-text-align: middle-center; height: 40px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 4px; padding-right: 20px; padding-bottom: 4px; padding-left: 20px; -unity-font-style: bold; top: auto; bottom: -283px;" />
   </hr:UILuaView>
 </UXML>
 

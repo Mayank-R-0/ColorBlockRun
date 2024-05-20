@@ -78,7 +78,7 @@ local currentClientTime = 10
 local showInMessageBox = false
 local startPosition = nil
 
-
+local allPlayers={}
 local winPlayers = {}
 
 function IsWaitingForPlayers()
@@ -112,6 +112,7 @@ setmetatable(currentRacePlayers, mt_currentRacePlayers)
 
 --- Handling Teleportation
 local changeTeleporterState = Event.new("changeTeleporterState")
+local setTextForWaitingForRace=Event.new("setTextForWaitingForRace")
 local playerTeleportatedToRace = Event.new("playerTeleportatedToRace")
 
 function ChangeTeleportedState(state)
@@ -119,7 +120,7 @@ function ChangeTeleportedState(state)
 end
 
 function TeleportPlayer()
-    print("Called Teleport")
+    print("Called Teleport To Game")
     playerTeleportatedToRace:FireServer()
 end
 
@@ -143,9 +144,46 @@ end
 
 --- Handling Teleportation
 
+--- Handling Game To Lobby Teleportation
+
+local playerTeleportatedToLobby = Event.new("playerTeleportatedToLobby")
+function TeleportPlayerToLobby()
+    print("Called Teleport To Lobby")
+    playerTeleportatedToLobby:FireServer()
+end
+function PlayerTeleportatedToLobby(player)
+    players[player] = nil
+    currentRacePlayers[player] = nil
+    local playerIndexInWinList = table.find(winPlayers, player) 
+    if playerIndexInWinList ~= nil then
+        table.remove(winPlayers, playerIndexInWinList)
+    end
+
+    if (gameStarted and (#currentRacePlayers <= 0)) then
+        endTheCurrentGame = true
+    end
+
+        --print("Player left", #players, #currentRacePlayers, #winPlayers,  player.name)
+    if(#players < minimumNumberOfPlayers) then
+        if(gameStarted or waitingForPlayer) then
+            endTheCurrentGame = true
+        else 
+            endGame()
+        end
+    end
+    player.character.transform.position = Vector3.new(1000,0,0)
+    playerTeleportationEvent:FireAllClients(player,1000,0,0,true)
+end
+
+--- Handling Game To Lobby Teleportation
+
 local function TrackPlayers(game, characterCallback)
     scene.PlayerJoined:Connect(function(scene, player)
+        table.insert(allPlayers,player)
         changeTeleporterState:FireClient(player,not gameStarted)
+        if(gameStarted) then
+            setTextForWaitingForRace:FireClient(player,"Waiting for current race to end")
+        end
         player.CharacterChanged:Connect(function(player, character)
             local playerinfo = players[player]
             if(character == nil) then
@@ -168,6 +206,11 @@ local function TrackPlayers(game, characterCallback)
     end)
 
     scene.PlayerLeft:Connect(function(scene, player)
+        
+        local indexInAllPlayers=table.find(allPlayers, player)
+        if(indexInAllPlayers~=nil) then
+        table.remove(allPlayers,indexInAllPlayers)
+        end
         players[player] = nil
         currentRacePlayers[player] = nil
         local playerIndexInWinList = table.find(winPlayers, player) 
@@ -263,6 +306,7 @@ function endGame()
         table.clear(winPlayers)
         endTheCurrentGame = false
         changeTeleporterState:FireAllClients(true)
+        setTextForWaitingForRace:FireAllClients("")
         return 
     end 
     serverStorageManager.UpdateLeaderBoardFromServer(playersStatsForLeaderboard)
@@ -283,6 +327,7 @@ function endGame()
         table.clear(winPlayers)
         endTheCurrentGame = false
         changeTeleporterState:FireAllClients(true)
+        setTextForWaitingForRace:FireAllClients("")
         -- if(#players < minimumNumberOfPlayers) then return end
         -- waitingForPlayersEvent:FireAllClients(waitingForPlayersEvent, colorString)
         -- StartWaitingForPlayer()
@@ -295,6 +340,7 @@ function StartWaitingForPlayer()
 
     waitingForPlayer = true
     changeTeleporterState:FireAllClients(true)
+    setTextForWaitingForRace:FireAllClients("")
     lobbyTimer = Timer.After(lobbyTime, function() 
         StartGameplayRounds()    
     end)
@@ -302,6 +348,12 @@ end
 
 function StartGameplayRounds()
     gameStarted = true
+    for i=1,#allPlayers,1 do
+        if(players[allPlayers[i]]==nil) then
+            print("setting For"..tostring(allPlayers[i]))
+            setTextForWaitingForRace:FireClient(allPlayers[i],"Waiting for current race to end")
+        end
+    end
     changeTeleporterState:FireAllClients(false)
     print("Waiting for player is over.. ! Starting game")
 
@@ -368,6 +420,11 @@ function BindClientEventsToServer()
             PlayerTeleportedToRace(player)
         end
     )
+    playerTeleportatedToLobby:Connect(
+        function(player)
+            PlayerTeleportatedToLobby(player)
+        end
+    )
     clientConnectionRequest:Connect(function(player, args)
         print("client connected : ", player.name)
         clientDataRecieveEvent.FireAllClients(clientDataRecieveEvent, player, currentRound, currentColor, colorString, gameStarted, waitingForPlayer)
@@ -426,6 +483,11 @@ function self:ClientAwake()
     changeTeleporterState:Connect(
         function(state)
             ChangeTeleportedState(state)
+        end
+    )
+    setTextForWaitingForRace:Connect(
+        function(Text)
+            mainUI.SetNextRaceText(Text)       
         end
     )
     clientDataRecieveEvent:Connect(function(player, currentRoundOnServer, currentColorOnServer, colorblocksString, gameStarted, waitingForPlayer)
